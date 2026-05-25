@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:LmsApp.ViewModels"
+             xmlns:m="clr-namespace:LmsApp.Models.Domain"
+             x:Class="LmsApp.Views.AchievementsPage"
+             x:DataType="vm:AchievementsViewModel"
+             Title="Достижения">
+
+    <RefreshView Command="{Binding RefreshCommand}"
+                 IsRefreshing="{Binding IsRefreshing}">
+        <ScrollView>
+            <VerticalStackLayout Padding="16" Spacing="16">
+
+                <!-- Loading -->
+                <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                   IsVisible="{Binding IsBusy}"
+                                   Color="{StaticResource Primary}"
+                                   HorizontalOptions="Center"/>
+
+                <!-- Level card -->
+                <Border Style="{StaticResource CardBorder}"
+                        IsVisible="{Binding UserLevel, Converter={StaticResource StringNotEmpty}}">
+                    <VerticalStackLayout Spacing="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                <Label Text="{Binding UserLevel.LevelName}"
+                                       Style="{StaticResource H3}"/>
+                                <Label Text="{Binding UserLevel.Level, StringFormat='Уровень {0}'}"
+                                       Style="{StaticResource Caption}"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="1"
+                                   Text="{Binding UserLevel.CurrentXp, StringFormat='{0} XP'}"
+                                   Style="{StaticResource H3}"
+                                   TextColor="{StaticResource Primary}"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                        <ProgressBar Progress="{Binding UserLevel.ProgressPercent, Converter={StaticResource PercentToProgress}}"
+                                     ProgressColor="{StaticResource Primary}"
+                                     HeightRequest="8"/>
+                        <Label Text="{Binding UserLevel.XpToNext, StringFormat='До следующего уровня: {0} XP'}"
+                               Style="{StaticResource Caption}"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Stats -->
+                <Border Style="{StaticResource CardBorder}">
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                        <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center" Spacing="2">
+                            <Label Text="{Binding UnlockedCount}" Style="{StaticResource H2}" HorizontalOptions="Center"/>
+                            <Label Text="Получено" Style="{StaticResource Caption}" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" Spacing="2">
+                            <Label Text="{Binding Achievements.Count}" Style="{StaticResource H2}" HorizontalOptions="Center"/>
+                            <Label Text="Всего" Style="{StaticResource Caption}" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <!-- Achievements list -->
+                <Label Text="Все достижения" Style="{StaticResource H3}"/>
+                <CollectionView ItemsSource="{Binding Achievements}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="m:Achievement">
+                            <Border Margin="0,4"
+                                    Padding="16"
+                                    StrokeShape="RoundRectangle 12"
+                                    StrokeThickness="1">
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsUnlocked}" Value="True">
+                                        <Setter Property="Stroke" Value="{StaticResource Warning}"/>
+                                        <Setter Property="BackgroundColor" Value="{StaticResource WarningLight}"/>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsUnlocked}" Value="False">
+                                        <Setter Property="Stroke" Value="{StaticResource Gray200}"/>
+                                        <Setter Property="BackgroundColor" Value="{StaticResource White}"/>
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                    <Label Grid.Column="0"
+                                           Text="🏅"
+                                           FontSize="32"
+                                           VerticalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsUnlocked}" Value="False">
+                                                <Setter Property="Opacity" Value="0.4"/>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                        <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="15"/>
+                                        <Label Text="{Binding Description}" Style="{StaticResource Caption}"/>
+                                        <Label Text="{Binding UnlockedAt, StringFormat='Получено: {0:dd.MM.yyyy}'}"
+                                               Style="{StaticResource Caption}"
+                                               TextColor="{StaticResource Success}"
+                                               IsVisible="{Binding IsUnlocked}"/>
+                                    </VerticalStackLayout>
+                                    <Label Grid.Column="2"
+                                           Text="{Binding XpReward, StringFormat='+{0} XP'}"
+                                           TextColor="{StaticResource Warning}"
+                                           FontAttributes="Bold"
+                                           FontSize="13"
+                                           VerticalOptions="Center"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+
+</ContentPage>

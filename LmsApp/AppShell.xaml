@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="LmsApp.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:LmsApp.Views"
+    Shell.TabBarBackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}"
+    Shell.TabBarForegroundColor="{StaticResource Primary}"
+    Shell.TabBarTitleColor="{StaticResource Primary}"
+    Shell.TabBarUnselectedColor="{StaticResource Gray400}"
+    Shell.BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}"
+    Shell.NavBarHasShadow="False">
+
+    <!-- Auth flow (no tabs) -->
+    <ShellContent Route="splash"
+                  ContentTemplate="{DataTemplate views:SplashPage}"
+                  Shell.TabBarIsVisible="False"/>
+
+    <ShellContent Route="login"
+                  ContentTemplate="{DataTemplate views:LoginPage}"
+                  Shell.TabBarIsVisible="False"/>
+
+    <!-- Employee TabBar -->
+    <TabBar x:Name="EmployeeTabBar" Route="employee">
+        <Tab Title="Главная" Icon="tab_home.png">
+            <ShellContent Route="home" ContentTemplate="{DataTemplate views:HomePage}"/>
+        </Tab>
+        <Tab Title="Каталог" Icon="tab_catalog.png">
+            <ShellContent Route="catalog" ContentTemplate="{DataTemplate views:CatalogPage}"/>
+        </Tab>
+        <Tab Title="Прогресс" Icon="tab_progress.png">
+            <ShellContent Route="progress" ContentTemplate="{DataTemplate views:MyProgressPage}"/>
+        </Tab>
+        <Tab Title="Профиль" Icon="tab_profile.png">
+            <ShellContent Route="profile" ContentTemplate="{DataTemplate views:ProfilePage}"/>
+        </Tab>
+    </TabBar>
+
+    <!-- Manager TabBar -->
+    <TabBar x:Name="ManagerTabBar" Route="manager" IsVisible="False">
+        <Tab Title="Главная" Icon="tab_home.png">
+            <ShellContent Route="home_m" ContentTemplate="{DataTemplate views:HomePage}"/>
+        </Tab>
+        <Tab Title="Каталог" Icon="tab_catalog.png">
+            <ShellContent Route="catalog_m" ContentTemplate="{DataTemplate views:CatalogPage}"/>
+        </Tab>
+        <Tab Title="Команда" Icon="tab_team.png">
+            <ShellContent Route="team" ContentTemplate="{DataTemplate views:TeamDashboardPage}"/>
+        </Tab>
+        <Tab Title="Профиль" Icon="tab_profile.png">
+            <ShellContent Route="profile_m" ContentTemplate="{DataTemplate views:ProfilePage}"/>
+        </Tab>
+    </TabBar>
+
+    <!-- HR TabBar -->
+    <TabBar x:Name="HrTabBar" Route="hr" IsVisible="False">
+        <Tab Title="Главная" Icon="tab_home.png">
+            <ShellContent Route="home_hr" ContentTemplate="{DataTemplate views:HomePage}"/>
+        </Tab>
+        <Tab Title="Каталог" Icon="tab_catalog.png">
+            <ShellContent Route="catalog_hr" ContentTemplate="{DataTemplate views:CatalogPage}"/>
+        </Tab>
+        <Tab Title="Назначить" Icon="tab_team.png">
+            <ShellContent Route="assign" ContentTemplate="{DataTemplate views:AssignCoursePage}"/>
+        </Tab>
+        <Tab Title="Профиль" Icon="tab_profile.png">
+            <ShellContent Route="profile_hr" ContentTemplate="{DataTemplate views:ProfilePage}"/>
+        </Tab>
+    </TabBar>
+
+</Shell>

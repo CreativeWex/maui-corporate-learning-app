@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:LmsApp.ViewModels"
+             x:Class="LmsApp.Views.ProfilePage"
+             x:DataType="vm:ProfileViewModel"
+             Title="Профиль">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="20">
+
+            <!-- User info -->
+            <Border Style="{StaticResource CardBorder}">
+                <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                    <Border HeightRequest="80"
+                            WidthRequest="80"
+                            StrokeShape="RoundRectangle 40"
+                            BackgroundColor="{StaticResource Primary}"
+                            HorizontalOptions="Center">
+                        <Label Text="{Binding CurrentUser.Name, StringFormat='{0}'}"
+                               TextColor="{StaticResource White}"
+                               FontSize="28"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+                    </Border>
+                    <Label Text="{Binding CurrentUser.Name}"
+                           Style="{StaticResource H2}"
+                           HorizontalOptions="Center"/>
+                    <Label Text="{Binding CurrentUser.Position}"
+                           Style="{StaticResource Caption}"
+                           HorizontalOptions="Center"/>
+                    <Label Text="{Binding CurrentUser.Department}"
+                           Style="{StaticResource Caption}"
+                           HorizontalOptions="Center"/>
+                    <Label Text="{Binding CurrentUser.Email}"
+                           Style="{StaticResource Caption}"
+                           TextColor="{StaticResource Primary}"
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Appearance -->
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Внешний вид" Style="{StaticResource H3}"/>
+                <Border Style="{StaticResource CardBorder}">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Тёмная тема" FontSize="15" VerticalOptions="Center"/>
+                        <Switch Grid.Column="1"
+                                IsToggled="{Binding IsDarkTheme}"
+                                OnColor="{StaticResource Primary}"/>
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Notifications -->
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Уведомления" Style="{StaticResource H3}"/>
+                <Border Style="{StaticResource CardBorder}">
+                    <VerticalStackLayout Spacing="12">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0" Text="Новые назначения" FontSize="15" VerticalOptions="Center"/>
+                            <Switch Grid.Column="1"
+                                    IsToggled="{Binding AppSettings.NotifyAssignments}"
+                                    OnColor="{StaticResource Primary}"/>
+                        </Grid>
+                        <BoxView HeightRequest="1" Color="{StaticResource Gray200}"/>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0" Text="Напоминания о дедлайнах" FontSize="15" VerticalOptions="Center"/>
+                            <Switch Grid.Column="1"
+                                    IsToggled="{Binding AppSettings.NotifyDeadlines}"
+                                    OnColor="{StaticResource Primary}"/>
+                        </Grid>
+                        <BoxView HeightRequest="1" Color="{StaticResource Gray200}"/>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0" Text="Достижения" FontSize="15" VerticalOptions="Center"/>
+                            <Switch Grid.Column="1"
+                                    IsToggled="{Binding AppSettings.NotifyAchievements}"
+                                    OnColor="{StaticResource Primary}"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Privacy -->
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Конфиденциальность" Style="{StaticResource H3}"/>
+                <Border Style="{StaticResource CardBorder}">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Анонимно в рейтинге" FontSize="15" VerticalOptions="Center"/>
+                        <Switch Grid.Column="1"
+                                IsToggled="{Binding AppSettings.IsAnonymousInLeaderboard}"
+                                OnColor="{StaticResource Primary}"/>
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Logout -->
+            <Button Text="Выйти из аккаунта"
+                    Command="{Binding LogoutCommand}"
+                    Style="{StaticResource DangerButton}"
+                    Margin="0,8,0,0"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

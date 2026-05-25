@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:LmsApp.ViewModels"
+             x:Class="LmsApp.Views.QuizResultPage"
+             x:DataType="vm:QuizResultViewModel"
+             Title="Результат теста"
+             NavigationPage.HasBackButton="False">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="24" VerticalOptions="Center">
+
+            <!-- Result emoji and title -->
+            <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                <Label Text="{Binding ResultEmoji}"
+                       FontSize="64"
+                       HorizontalOptions="Center"/>
+                <Label Text="{Binding ResultTitle}"
+                       Style="{StaticResource H1}"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center"/>
+                <Label Text="{Binding ResultSubtitle}"
+                       Style="{StaticResource Body}"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center"/>
+            </VerticalStackLayout>
+
+            <!-- Score card -->
+            <Border Style="{StaticResource CardBorder}">
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" RowSpacing="12" ColumnSpacing="16">
+                    <VerticalStackLayout Grid.Row="0" Grid.Column="0" HorizontalOptions="Center" Spacing="2">
+                        <Label Text="{Binding Score}" Style="{StaticResource H1}" HorizontalOptions="Center"/>
+                        <Label Text="Правильных" Style="{StaticResource Caption}" HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Row="0" Grid.Column="1" HorizontalOptions="Center" Spacing="2">
+                        <Label Text="{Binding Total}" Style="{StaticResource H1}" HorizontalOptions="Center"/>
+                        <Label Text="Всего" Style="{StaticResource Caption}" HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                    <ProgressBar Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                 Progress="{Binding Percent, Converter={StaticResource PercentToProgress}}"
+                                 ProgressColor="{StaticResource Primary}"
+                                 HeightRequest="8"/>
+                </Grid>
+            </Border>
+
+            <!-- Actions -->
+            <VerticalStackLayout Spacing="12">
+                <Button Text="Получить сертификат"
+                        Command="{Binding OpenCertificatesCommand}"
+                        Style="{StaticResource PrimaryButton}"
+                        IsVisible="{Binding ShowCertificate}"/>
+                <Button Text="Вернуться к курсу"
+                        Command="{Binding GoToCourseCommand}"
+                        Style="{StaticResource SecondaryButton}"/>
+                <Button Text="Пройти снова"
+                        Command="{Binding RetryCommand}"
+                        Style="{StaticResource SecondaryButton}"
+                        IsVisible="{Binding Passed, Converter={StaticResource InvertBool}}"/>
+                <Button Text="На главную"
+                        Command="{Binding GoHomCommand}"
+                        Style="{StaticResource SecondaryButton}"/>
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

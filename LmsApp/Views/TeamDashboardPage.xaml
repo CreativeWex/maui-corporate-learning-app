@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:LmsApp.ViewModels"
+             xmlns:m="clr-namespace:LmsApp.Models.Domain"
+             x:Class="LmsApp.Views.TeamDashboardPage"
+             x:DataType="vm:TeamDashboardViewModel"
+             Title="Команда">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Назначить" Command="{Binding AssignCourseCommand}"/>
+    </ContentPage.ToolbarItems>
+
+    <RefreshView Command="{Binding RefreshCommand}"
+                 IsRefreshing="{Binding IsRefreshing}">
+        <ScrollView>
+            <VerticalStackLayout Padding="16" Spacing="16">
+
+                <!-- Loading -->
+                <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                   IsVisible="{Binding IsBusy}"
+                                   Color="{StaticResource Primary}"
+                                   HorizontalOptions="Center"/>
+
+                <!-- Team stats -->
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                    <Border Grid.Column="0" Style="{StaticResource CardBorder}">
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="{Binding TeamStats.TotalMembers}"
+                                   Style="{StaticResource H2}"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Сотрудников" Style="{StaticResource Caption}" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource CardBorder}">
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="{Binding TeamStats.AvgProgress, StringFormat='{0}%'}"
+                                   Style="{StaticResource H2}"
+                                   TextColor="{StaticResource Primary}"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Ср. прогресс" Style="{StaticResource Caption}" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource CardBorder}">
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="{Binding TeamStats.OverdueCount}"
+                                   Style="{StaticResource H2}"
+                                   TextColor="{StaticResource Error}"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Просрочено" Style="{StaticResource Caption}" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- At-risk section -->
+                <VerticalStackLayout Spacing="8" IsVisible="{Binding HasAtRisk}">
+                    <Label Text="⚠️ Зона риска" Style="{StaticResource H3}" TextColor="{StaticResource Warning}"/>
+                    <CollectionView ItemsSource="{Binding AtRisk}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="m:TeamMember">
+                                <Border Margin="0,4"
+                                        Style="{StaticResource CardBorder}"
+                                        BackgroundColor="{StaticResource WarningLight}">
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                        <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                            <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="15"/>
+                                            <Label Text="{Binding Position}" Style="{StaticResource Caption}"/>
+                                            <Label Text="{Binding NearestDeadline, StringFormat='Дедлайн: {0:dd.MM.yyyy}'}"
+                                                   Style="{StaticResource Caption}"
+                                                   TextColor="{StaticResource Warning}"
+                                                   IsVisible="{Binding NearestDeadline, Converter={StaticResource StringNotEmpty}}"/>
+                                        </VerticalStackLayout>
+                                        <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="End">
+                                            <Label Text="{Binding OverallProgress, StringFormat='{0}%'}"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{StaticResource Warning}"
+                                                   HorizontalOptions="Center"/>
+                                            <Label Text="прогресс" Style="{StaticResource Caption}"/>
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+                <!-- All members -->
+                <Label Text="Все сотрудники" Style="{StaticResource H3}"/>
+                <CollectionView ItemsSource="{Binding Members}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="m:TeamMember">
+                            <Border Style="{StaticResource CardBorder}" Margin="0,4">
+                                <VerticalStackLayout Spacing="8">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                            <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="15"/>
+                                            <Label Text="{Binding Position}" Style="{StaticResource Caption}"/>
+                                        </VerticalStackLayout>
+                                        <Label Grid.Column="1"
+                                               Text="{Binding OverallProgress, StringFormat='{0}%'}"
+                                               FontAttributes="Bold"
+                                               TextColor="{Binding OverallProgress, Converter={StaticResource ProgressToColor}}"
+                                               VerticalOptions="Center"/>
+                                    </Grid>
+                                    <ProgressBar Progress="{Binding OverallProgress, Converter={StaticResource PercentToProgress}}"
+                                                 ProgressColor="{StaticResource Primary}"
+                                                 HeightRequest="6"/>
+                                    <Label Text="{Binding AssignedCourses, StringFormat='{0} курсов назначено'}"
+                                           Style="{StaticResource Caption}"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+
+</ContentPage>

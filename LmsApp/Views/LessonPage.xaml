@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:LmsApp.ViewModels"
+             x:Class="LmsApp.Views.LessonPage"
+             x:DataType="vm:LessonViewModel"
+             Title="{Binding Lesson.Title}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="←" Command="{Binding GoBackCommand}"/>
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- Loading -->
+        <ActivityIndicator Grid.Row="0"
+                           IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           Color="{StaticResource Primary}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"/>
+
+        <!-- Article + Infographic content (WebView) -->
+        <WebView Grid.Row="0"
+                 IsVisible="{Binding IsFlashcards, Converter={StaticResource InvertBool}}"
+                 Margin="0">
+            <WebView.Source>
+                <HtmlWebViewSource Html="{Binding HtmlContent}"/>
+            </WebView.Source>
+        </WebView>
+
+        <!-- Flashcards -->
+        <Grid Grid.Row="0"
+              IsVisible="{Binding IsFlashcards}"
+              RowDefinitions="*,Auto"
+              Padding="16">
+
+            <!-- Card -->
+            <Border Grid.Row="0"
+                    Style="{StaticResource CardBorder}"
+                    Margin="0,8">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding FlipCardCommand}"/>
+                </Border.GestureRecognizers>
+                <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="16">
+                    <Label Text="{Binding CurrentCard.Front}"
+                           Style="{StaticResource H3}"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           IsVisible="{Binding IsCardFlipped, Converter={StaticResource InvertBool}}"/>
+                    <Label Text="{Binding CurrentCard.Back}"
+                           Style="{StaticResource Body}"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           IsVisible="{Binding IsCardFlipped}"/>
+                    <Label Text="Нажмите для переворота"
+                           Style="{StaticResource Caption}"
+                           TextColor="{StaticResource Primary}"
+                           HorizontalOptions="Center"
+                           IsVisible="{Binding IsCardFlipped, Converter={StaticResource InvertBool}}"/>
+                    <Label Text="Ответ показан"
+                           Style="{StaticResource Caption}"
+                           TextColor="{StaticResource Success}"
+                           HorizontalOptions="Center"
+                           IsVisible="{Binding IsCardFlipped}"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Card navigation -->
+            <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" Padding="0,8">
+                <Button Grid.Column="0"
+                        Text="← Назад"
+                        Command="{Binding PreviousCardCommand}"
+                        Style="{StaticResource SecondaryButton}"/>
+                <Label Grid.Column="1"
+                       Text="{Binding CurrentCardIndex, StringFormat='{0}'}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       Style="{StaticResource Caption}"/>
+                <Button Grid.Column="2"
+                        Text="Вперёд →"
+                        Command="{Binding NextCardCommand}"
+                        Style="{StaticResource PrimaryButton}"/>
+            </Grid>
+
+        </Grid>
+
+        <!-- Bottom bar for article/infographic -->
+        <Border Grid.Row="1"
+                IsVisible="{Binding IsFlashcards, Converter={StaticResource InvertBool}}"
+                BackgroundColor="{StaticResource White}"
+                StrokeThickness="0"
+                Padding="16,8">
+            <VerticalStackLayout Spacing="4">
+                <Button Text="Отметить выполненным"
+                        Command="{Binding MarkCompletedCommand}"
+                        Style="{StaticResource PrimaryButton}"
+                        IsVisible="{Binding IsCompleted, Converter={StaticResource InvertBool}}"
+                        IsEnabled="{Binding IsCompleted, Converter={StaticResource InvertBool}}"/>
+                <Label Text="✓ Урок выполнен"
+                       TextColor="{StaticResource Success}"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       IsVisible="{Binding IsCompleted}"/>
+            </VerticalStackLayout>
+        </Border>
+
+    </Grid>
+
+</ContentPage>

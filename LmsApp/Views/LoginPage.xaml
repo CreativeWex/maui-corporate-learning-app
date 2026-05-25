@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:LmsApp.ViewModels"
+             x:Class="LmsApp.Views.LoginPage"
+             x:DataType="vm:LoginViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource OffBlack}}">
+
+    <ScrollView>
+        <Grid RowDefinitions="*,Auto" MinimumHeightRequest="600">
+
+            <VerticalStackLayout Grid.Row="0" VerticalOptions="Center" Padding="32" Spacing="0">
+
+                <!-- Logo -->
+                <Label Text="LMS" FontSize="56" FontFamily="OpenSansSemibold"
+                       TextColor="{StaticResource Primary}" HorizontalOptions="Center" Margin="0,0,0,4"/>
+                <Label Text="Корпоративное обучение" FontSize="14"
+                       TextColor="{StaticResource Gray500}" HorizontalOptions="Center" Margin="0,0,0,48"/>
+
+                <!-- Title -->
+                <Label Text="Добро пожаловать" Style="{StaticResource H1}" Margin="0,0,0,8"/>
+                <Label Text="Войдите в свой аккаунт" Style="{StaticResource Body}" Margin="0,0,0,32"/>
+
+                <!-- Lockout warning -->
+                <Border IsVisible="{Binding IsLockedOut}" BackgroundColor="{StaticResource ErrorLight}"
+                        StrokeShape="RoundRectangle 12" StrokeThickness="0" Padding="16" Margin="0,0,0,16">
+                    <Label Text="{Binding LockoutMessage}" TextColor="{StaticResource Error}" FontSize="14"/>
+                </Border>
+
+                <!-- Error message -->
+                <Border IsVisible="{Binding HasError}" BackgroundColor="{StaticResource ErrorLight}"
+                        StrokeShape="RoundRectangle 12" StrokeThickness="0" Padding="16" Margin="0,0,0,16">
+                    <Label Text="{Binding ErrorMessage}" TextColor="{StaticResource Error}" FontSize="14"/>
+                </Border>
+
+                <!-- Email -->
+                <Label Text="Email" FontSize="14" FontFamily="OpenSansSemibold"
+                       TextColor="{StaticResource Gray700}" Margin="0,0,0,6"/>
+                <Border StrokeShape="RoundRectangle 12" StrokeThickness="1"
+                        Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray800}}"
+                        Margin="0,0,0,16" Padding="0">
+                    <Entry Text="{Binding Email}"
+                           Keyboard="Email"
+                           Placeholder="employee@corp"
+                           PlaceholderColor="{StaticResource Gray400}"
+                           FontSize="16"
+                           Margin="16,0"
+                           HeightRequest="52"
+                           ReturnType="Next"/>
+                </Border>
+
+                <!-- Password -->
+                <Label Text="Пароль" FontSize="14" FontFamily="OpenSansSemibold"
+                       TextColor="{StaticResource Gray700}" Margin="0,0,0,6"/>
+                <Border StrokeShape="RoundRectangle 12" StrokeThickness="1"
+                        Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray800}}"
+                        Margin="0,0,0,8" Padding="0">
+                    <Entry Text="{Binding Password}"
+                           IsPassword="True"
+                           Placeholder="••••••"
+                           PlaceholderColor="{StaticResource Gray400}"
+                           FontSize="16"
+                           Margin="16,0"
+                           HeightRequest="52"
+                           ReturnType="Go"
+                           ReturnCommand="{Binding LoginCommand}"/>
+                </Border>
+
+                <!-- Forgot password -->
+                <Label Text="Забыли пароль?" FontSize="13" TextColor="{StaticResource Primary}"
+                       HorizontalOptions="End" Margin="0,0,0,32">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ForgotPasswordCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+
+                <!-- Login button -->
+                <Button Text="Войти"
+                        Command="{Binding LoginCommand}"
+                        Style="{StaticResource PrimaryButton}"
+                        HorizontalOptions="Fill"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBool}}"
+                        Margin="0,0,0,16"/>
+
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                                   Color="{StaticResource Primary}" HorizontalOptions="Center"
+                                   Margin="0,0,0,16"/>
+
+                <!-- Divider -->
+                <Grid Margin="0,0,0,16">
+                    <BoxView HeightRequest="1" BackgroundColor="{StaticResource Gray200}"
+                             VerticalOptions="Center" HorizontalOptions="Fill"/>
+                    <Label Text="или" BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource OffBlack}}"
+                           TextColor="{StaticResource Gray400}" FontSize="13"
+                           HorizontalOptions="Center" Padding="8,0"/>
+                </Grid>
+
+                <!-- SSO button -->
+                <Button Text="Войти через SSO"
+                        Command="{Binding SsoLoginCommand}"
+                        Style="{StaticResource SecondaryButton}"
+                        HorizontalOptions="Fill"/>
+
+            </VerticalStackLayout>
+
+        </Grid>
+    </ScrollView>
+
+</ContentPage>

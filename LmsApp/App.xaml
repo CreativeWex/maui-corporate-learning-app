@@ -1,0 +1,28 @@
+﻿<?xml version = "1.0" encoding = "UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:LmsApp"
+             xmlns:conv="clr-namespace:LmsApp.Converters"
+             x:Class="LmsApp.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <conv:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
+            <conv:InvertedBoolConverter x:Key="InvertBool"/>
+            <conv:InvertedBoolToVisibilityConverter x:Key="InvertBoolToVisibility"/>
+            <conv:PercentToStringConverter x:Key="PercentToString"/>
+            <conv:StatusToColorConverter x:Key="StatusToColor"/>
+            <conv:DeadlineToColorConverter x:Key="DeadlineToColor"/>
+            <conv:ModuleTypeToIconConverter x:Key="ModuleTypeToIcon"/>
+            <conv:RoleToVisibilityConverter x:Key="RoleToVisibility"/>
+            <conv:ProgressToColorConverter x:Key="ProgressToColor"/>
+            <conv:StringNotEmptyConverter x:Key="StringNotEmpty"/>
+            <conv:PercentToProgressConverter x:Key="PercentToProgress"/>
+            <conv:IntToBoolConverter x:Key="IntToBool"/>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

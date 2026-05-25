@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:LmsApp.ViewModels"
+             xmlns:m="clr-namespace:LmsApp.Models.Domain"
+             x:Class="LmsApp.Views.CertificatesPage"
+             x:DataType="vm:CertificatesViewModel"
+             Title="Сертификаты">
+
+    <RefreshView Command="{Binding RefreshCommand}"
+                 IsRefreshing="{Binding IsRefreshing}">
+        <VerticalStackLayout Padding="16" Spacing="12">
+
+            <!-- Loading -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               Color="{StaticResource Primary}"
+                               HorizontalOptions="Center"/>
+
+            <!-- Empty state -->
+            <VerticalStackLayout IsVisible="{Binding IsEmpty}"
+                                 HorizontalOptions="Center"
+                                 Spacing="8"
+                                 Margin="0,60,0,0">
+                <Label Text="🏆" FontSize="48" HorizontalOptions="Center"/>
+                <Label Text="Нет сертификатов" Style="{StaticResource H3}" HorizontalOptions="Center"/>
+                <Label Text="Завершите итоговый тест курса, чтобы получить сертификат"
+                       Style="{StaticResource Caption}"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center"/>
+            </VerticalStackLayout>
+
+            <!-- Certificates list -->
+            <CollectionView ItemsSource="{Binding Certificates}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="m:Certificate">
+                        <Border Style="{StaticResource CardBorder}" Margin="0,4">
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                <!-- Icon -->
+                                <Label Grid.Column="0"
+                                       Text="🎓"
+                                       FontSize="36"
+                                       VerticalOptions="Center"/>
+                                <!-- Info -->
+                                <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                    <Label Text="{Binding CourseName}"
+                                           FontAttributes="Bold"
+                                           FontSize="15"/>
+                                    <Label Text="{Binding IssuedAt, StringFormat='Выдан: {0:dd.MM.yyyy}'}"
+                                           Style="{StaticResource Caption}"/>
+                                </VerticalStackLayout>
+                                <!-- Download button -->
+                                <Button Grid.Column="2"
+                                        Text="⬇"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CertificatesViewModel}}, Path=DownloadCertificateCommand}"
+                                        CommandParameter="{Binding .}"
+                                        Style="{StaticResource SecondaryButton}"
+                                        FontSize="18"
+                                        WidthRequest="44"
+                                        Padding="0"
+                                        VerticalOptions="Center"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </RefreshView>
+
+</ContentPage>

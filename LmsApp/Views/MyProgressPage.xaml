@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:LmsApp.ViewModels"
+             xmlns:m="clr-namespace:LmsApp.Models.Domain"
+             x:Class="LmsApp.Views.MyProgressPage"
+             x:DataType="vm:MyProgressViewModel"
+             Title="Мой прогресс">
+
+    <RefreshView Command="{Binding RefreshCommand}"
+                 IsRefreshing="{Binding IsRefreshing}">
+        <ScrollView>
+            <VerticalStackLayout Padding="16" Spacing="20">
+
+                <!-- Loading -->
+                <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                   IsVisible="{Binding IsBusy}"
+                                   Color="{StaticResource Primary}"
+                                   HorizontalOptions="Center"/>
+
+                <!-- Stats cards -->
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" RowSpacing="8" ColumnSpacing="8">
+                    <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource CardBorder}">
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="🔥" FontSize="24" HorizontalOptions="Center"/>
+                            <Label Text="{Binding CurrentStreak}"
+                                   Style="{StaticResource H2}"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Дней подряд" Style="{StaticResource Caption}" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource CardBorder}">
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="📚" FontSize="24" HorizontalOptions="Center"/>
+                            <Label Text="{Binding CompletedCourses}"
+                                   Style="{StaticResource H2}"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Курсов пройдено" Style="{StaticResource Caption}" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource CardBorder}">
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="⏱️" FontSize="24" HorizontalOptions="Center"/>
+                            <Label Text="{Binding TotalHours, StringFormat='{0:F1}'}"
+                                   Style="{StaticResource H2}"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Часов обучения" Style="{StaticResource Caption}" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource CardBorder}">
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="✅" FontSize="24" HorizontalOptions="Center"/>
+                            <Label Text="{Binding PassedQuizzes}"
+                                   Style="{StaticResource H2}"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Тестов сдано" Style="{StaticResource Caption}" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- Activity calendar -->
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Активность" Style="{StaticResource H3}"/>
+
+                    <!-- Period selector -->
+                    <HorizontalStackLayout Spacing="8">
+                        <Button Text="Неделя"
+                                Command="{Binding SelectPeriodCommand}"
+                                CommandParameter="Неделя"
+                                Style="{StaticResource SecondaryButton}"
+                                FontSize="12"
+                                Padding="12,6"/>
+                        <Button Text="Месяц"
+                                Command="{Binding SelectPeriodCommand}"
+                                CommandParameter="Месяц"
+                                Style="{StaticResource SecondaryButton}"
+                                FontSize="12"
+                                Padding="12,6"/>
+                        <Button Text="Квартал"
+                                Command="{Binding SelectPeriodCommand}"
+                                CommandParameter="Квартал"
+                                Style="{StaticResource SecondaryButton}"
+                                FontSize="12"
+                                Padding="12,6"/>
+                    </HorizontalStackLayout>
+
+                    <!-- Activity list (calendar-style heatmap) -->
+                    <CollectionView ItemsSource="{Binding Activity}"
+                                    HeightRequest="80"
+                                    ItemsLayout="HorizontalList">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="m:DailyActivity">
+                                <VerticalStackLayout Spacing="2" WidthRequest="28" Margin="1,0">
+                                    <BoxView HeightRequest="24"
+                                             WidthRequest="24"
+                                             CornerRadius="3"
+                                             HorizontalOptions="Center">
+                                        <BoxView.Triggers>
+                                            <DataTrigger TargetType="BoxView" Binding="{Binding HasActivity}" Value="True">
+                                                <Setter Property="Color" Value="{StaticResource Primary}"/>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="BoxView" Binding="{Binding HasActivity}" Value="False">
+                                                <Setter Property="Color" Value="{StaticResource Gray200}"/>
+                                            </DataTrigger>
+                                        </BoxView.Triggers>
+                                    </BoxView>
+                                    <Label Text="{Binding Date, StringFormat='{0:dd}'}"
+                                           FontSize="8"
+                                           HorizontalOptions="Center"
+                                           TextColor="{StaticResource Gray500}"/>
+                                </VerticalStackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+
+</ContentPage>

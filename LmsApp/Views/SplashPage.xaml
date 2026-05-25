@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:LmsApp.ViewModels"
+             x:Class="LmsApp.Views.SplashPage"
+             x:DataType="vm:SplashViewModel"
+             NavigationPage.HasNavigationBar="False"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{StaticResource Primary}">
+
+    <Grid RowDefinitions="*,Auto">
+
+        <VerticalStackLayout Grid.Row="0" VerticalOptions="Center" HorizontalOptions="Center" Spacing="8">
+            <Label Text="LMS" FontSize="72" FontFamily="OpenSansSemibold"
+                   TextColor="White" HorizontalOptions="Center"/>
+            <Label Text="Корпоративное обучение" FontSize="18"
+                   TextColor="White" Opacity="0.85" HorizontalOptions="Center"/>
+            <ActivityIndicator IsRunning="{Binding IsBusy}" Color="White" Margin="0,32,0,0"
+                               HeightRequest="32" WidthRequest="32"/>
+        </VerticalStackLayout>
+
+        <Label Grid.Row="1" Text="{Binding Version, StringFormat='v{0}'}"
+               TextColor="White" Opacity="0.6" FontSize="12"
+               HorizontalOptions="Center" Margin="0,0,0,32"/>
+    </Grid>
+
+</ContentPage>

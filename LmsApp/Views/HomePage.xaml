@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:LmsApp.ViewModels"
+             xmlns:m="clr-namespace:LmsApp.Models.Domain"
+             x:Class="LmsApp.Views.HomePage"
+             x:DataType="vm:HomeViewModel"
+             Title="Главная">
+
+    <RefreshView Command="{Binding RefreshCommand}"
+                 IsRefreshing="{Binding IsRefreshing}">
+        <ScrollView>
+            <VerticalStackLayout Padding="16" Spacing="20">
+
+                <!-- Header -->
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                    <VerticalStackLayout Grid.Column="0" Spacing="2">
+                        <Label Text="{Binding Greeting}"
+                               Style="{StaticResource H2}"
+                               LineBreakMode="TailTruncation"/>
+                        <Label Text="{Binding StreakDays, StringFormat='🔥 Серия: {0} дн.'}"
+                               Style="{StaticResource Caption}"
+                               TextColor="{StaticResource Warning}"/>
+                    </VerticalStackLayout>
+                    <Border Grid.Column="1"
+                            Style="{StaticResource Chip}"
+                            BackgroundColor="{StaticResource PrimaryLight}"
+                            VerticalOptions="Center">
+                        <Label Text="{Binding Stats.TotalXp, StringFormat='{0} XP'}"
+                               TextColor="{StaticResource Primary}"
+                               FontAttributes="Bold"
+                               FontSize="13"/>
+                    </Border>
+                </Grid>
+
+                <!-- Stats row -->
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                    <Border Grid.Column="0" Style="{StaticResource CardBorder}">
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="{Binding Stats.CompletedCourses}"
+                                   Style="{StaticResource H2}"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Курсов" Style="{StaticResource Caption}" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource CardBorder}">
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="{Binding Stats.PassedQuizzes}"
+                                   Style="{StaticResource H2}"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Тестов" Style="{StaticResource Caption}" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource CardBorder}">
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="{Binding Stats.TotalMinutes}"
+                                   Style="{StaticResource H2}"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Минут" Style="{StaticResource Caption}" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- Continue learning -->
+                <VerticalStackLayout Spacing="8"
+                                     IsVisible="{Binding ContinueLearning.Count, Converter={StaticResource IntToBool}}">
+                    <Label Text="Продолжить обучение" Style="{StaticResource H3}"/>
+                    <CollectionView ItemsSource="{Binding ContinueLearning}"
+                                    HeightRequest="170"
+                                    ItemsLayout="HorizontalList">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="m:Course">
+                                <Border Style="{StaticResource CardBorder}"
+                                        WidthRequest="220"
+                                        Margin="0,4,8,4">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=OpenCourseCommand}"
+                                            CommandParameter="{Binding Id}"/>
+                                    </Border.GestureRecognizers>
+                                    <VerticalStackLayout Spacing="6">
+                                        <Label Text="{Binding Title}"
+                                               FontAttributes="Bold"
+                                               FontSize="14"
+                                               LineBreakMode="WordWrap"
+                                               MaxLines="2"/>
+                                        <Label Text="{Binding Category}"
+                                               Style="{StaticResource Caption}"/>
+                                        <ProgressBar Progress="{Binding ProgressPercent, Converter={StaticResource PercentToProgress}}"
+                                                     ProgressColor="{StaticResource Primary}"
+                                                     HeightRequest="4"/>
+                                        <Label Text="{Binding ProgressPercent, StringFormat='{0}%'}"
+                                               Style="{StaticResource Caption}"
+                                               TextColor="{StaticResource Primary}"/>
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+                <!-- New assignments -->
+                <VerticalStackLayout Spacing="8"
+                                     IsVisible="{Binding NewAssignments.Count, Converter={StaticResource IntToBool}}">
+                    <Label Text="Новые назначения" Style="{StaticResource H3}"/>
+                    <CollectionView ItemsSource="{Binding NewAssignments}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="m:Course">
+                                <Border Style="{StaticResource CardBorder}" Margin="0,0,0,8">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=OpenCourseCommand}"
+                                            CommandParameter="{Binding Id}"/>
+                                    </Border.GestureRecognizers>
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                        <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                            <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="15"/>
+                                            <Label Text="{Binding Category}" Style="{StaticResource Caption}"/>
+                                        </VerticalStackLayout>
+                                        <Label Grid.Column="1"
+                                               Text="→"
+                                               FontSize="20"
+                                               TextColor="{StaticResource Primary}"
+                                               VerticalOptions="Center"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+                <!-- Loading indicator -->
+                <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                   IsVisible="{Binding IsBusy}"
+                                   Color="{StaticResource Primary}"
+                                   HorizontalOptions="Center"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+
+</ContentPage>

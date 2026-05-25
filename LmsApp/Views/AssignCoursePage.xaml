@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:LmsApp.ViewModels"
+             xmlns:m="clr-namespace:LmsApp.Models.Domain"
+             x:Class="LmsApp.Views.AssignCoursePage"
+             x:DataType="vm:AssignCourseViewModel"
+             Title="Назначить курс">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="16" RowSpacing="12">
+
+        <!-- Step indicator -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto,*,Auto,*" ColumnSpacing="4">
+            <Border Grid.Column="0"
+                    Padding="8,4"
+                    StrokeShape="RoundRectangle 16"
+                    HorizontalOptions="Center">
+                <Border.Triggers>
+                    <DataTrigger TargetType="Border" Binding="{Binding IsStep1}" Value="True">
+                        <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
+                        <Setter Property="Stroke" Value="{StaticResource Primary}"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Border" Binding="{Binding IsStep1}" Value="False">
+                        <Setter Property="BackgroundColor" Value="{StaticResource Gray200}"/>
+                        <Setter Property="Stroke" Value="{StaticResource Gray200}"/>
+                    </DataTrigger>
+                </Border.Triggers>
+                <Label Text="1. Курс" FontSize="12" TextColor="{StaticResource White}"/>
+            </Border>
+            <Label Grid.Column="1" Text="→" TextColor="{StaticResource Gray400}" VerticalOptions="Center"/>
+            <Border Grid.Column="2"
+                    Padding="8,4"
+                    StrokeShape="RoundRectangle 16"
+                    HorizontalOptions="Center">
+                <Border.Triggers>
+                    <DataTrigger TargetType="Border" Binding="{Binding IsStep2}" Value="True">
+                        <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
+                        <Setter Property="Stroke" Value="{StaticResource Primary}"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Border" Binding="{Binding IsStep2}" Value="False">
+                        <Setter Property="BackgroundColor" Value="{StaticResource Gray200}"/>
+                        <Setter Property="Stroke" Value="{StaticResource Gray200}"/>
+                    </DataTrigger>
+                </Border.Triggers>
+                <Label Text="2. Люди" FontSize="12" TextColor="{StaticResource White}"/>
+            </Border>
+            <Label Grid.Column="3" Text="→" TextColor="{StaticResource Gray400}" VerticalOptions="Center"/>
+            <Border Grid.Column="4"
+                    Padding="8,4"
+                    StrokeShape="RoundRectangle 16"
+                    HorizontalOptions="Center">
+                <Border.Triggers>
+                    <DataTrigger TargetType="Border" Binding="{Binding IsStep3}" Value="True">
+                        <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
+                        <Setter Property="Stroke" Value="{StaticResource Primary}"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Border" Binding="{Binding IsStep3}" Value="False">
+                        <Setter Property="BackgroundColor" Value="{StaticResource Gray200}"/>
+                        <Setter Property="Stroke" Value="{StaticResource Gray200}"/>
+                    </DataTrigger>
+                </Border.Triggers>
+                <Label Text="3. Опции" FontSize="12" TextColor="{StaticResource White}"/>
+            </Border>
+        </Grid>
+
+        <!-- Step 1: Choose course -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding AvailableCourses}"
+                        IsVisible="{Binding IsStep1}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="m:Course">
+                    <Border Margin="0,4"
+                            Padding="16"
+                            StrokeShape="RoundRectangle 10"
+                            StrokeThickness="2"
+                            Stroke="{StaticResource Gray200}">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AssignCourseViewModel}}, Path=SelectCourseCommand}"
+                                CommandParameter="{Binding .}"/>
+                        </Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Grid.Column="0" Spacing="4">
+                                <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="15"/>
+                                <Label Text="{Binding Category}" Style="{StaticResource Caption}"/>
+                                <Label Text="{Binding DurationMinutes, StringFormat='{0} ч.'}"
+                                       Style="{StaticResource Caption}"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Step 2: Choose members -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Members}"
+                        IsVisible="{Binding IsStep2}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:SelectableTeamMember">
+                    <Border Margin="0,4"
+                            Padding="16"
+                            StrokeShape="RoundRectangle 10"
+                            StrokeThickness="2">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AssignCourseViewModel}}, Path=ToggleMemberCommand}"
+                                CommandParameter="{Binding .}"/>
+                        </Border.GestureRecognizers>
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+                                <Setter Property="Stroke" Value="{StaticResource Primary}"/>
+                                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryLight}"/>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="False">
+                                <Setter Property="Stroke" Value="{StaticResource Gray200}"/>
+                                <Setter Property="BackgroundColor" Value="{StaticResource White}"/>
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="15"/>
+                                <Label Text="{Binding Position}" Style="{StaticResource Caption}"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="1"
+                                   Text="✓"
+                                   FontSize="20"
+                                   TextColor="{StaticResource Success}"
+                                   VerticalOptions="Center"
+                                   IsVisible="{Binding IsSelected}"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Step 3: Settings -->
+        <ScrollView Grid.Row="1" IsVisible="{Binding IsStep3}">
+            <VerticalStackLayout Spacing="16">
+                <Border Style="{StaticResource CardBorder}">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="Выбранный курс:" Style="{StaticResource Caption}"/>
+                        <Label Text="{Binding SelectedCourse.Title}" FontAttributes="Bold" FontSize="16"/>
+
+                        <Label Text="Дедлайн:" Style="{StaticResource Caption}"/>
+                        <DatePicker Date="{Binding Deadline}" Format="dd.MM.yyyy"/>
+
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0" Text="Обязательный курс" FontSize="15" VerticalOptions="Center"/>
+                            <Switch Grid.Column="1" IsToggled="{Binding IsMandatory}"/>
+                        </Grid>
+
+                        <Label Text="Сообщение (необязательно):" Style="{StaticResource Caption}"/>
+                        <Editor Text="{Binding Message}"
+                                Placeholder="Напишите сообщение для сотрудников..."
+                                HeightRequest="80"
+                                AutoSize="TextChanges"/>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Navigation buttons -->
+        <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="8">
+            <Button Grid.Column="0"
+                    Text="Назад"
+                    Command="{Binding PrevStepCommand}"
+                    Style="{StaticResource SecondaryButton}"
+                    IsVisible="{Binding IsStep1, Converter={StaticResource InvertBool}}"/>
+            <Button Grid.Column="0"
+                    Text="Отмена"
+                    Command="{Binding CancelCommand}"
+                    Style="{StaticResource SecondaryButton}"
+                    IsVisible="{Binding IsStep1}"/>
+            <Button Grid.Column="1"
+                    Text="Далее →"
+                    Command="{Binding NextStepCommand}"
+                    Style="{StaticResource PrimaryButton}"
+                    IsEnabled="{Binding CanGoNext}"
+                    IsVisible="{Binding IsStep3, Converter={StaticResource InvertBool}}"/>
+            <Button Grid.Column="1"
+                    Text="Назначить ✓"
+                    Command="{Binding SubmitCommand}"
+                    Style="{StaticResource PrimaryButton}"
+                    IsVisible="{Binding IsStep3}"/>
+        </Grid>
+
+    </Grid>
+
+</ContentPage>
