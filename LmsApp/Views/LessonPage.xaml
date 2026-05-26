@@ -2,15 +2,16 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:LmsApp.ViewModels"
+             xmlns:controls="clr-namespace:LmsApp.Controls"
              x:Class="LmsApp.Views.LessonPage"
              x:DataType="vm:LessonViewModel"
+             SafeAreaEdges="All"
+             Shell.NavBarIsVisible="False"
              Title="{Binding Lesson.Title}">
 
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="←" Command="{Binding GoBackCommand}"/>
-    </ContentPage.ToolbarItems>
-
-    <Grid RowDefinitions="*,Auto">
+    <Grid RowDefinitions="Auto,*">
+    <controls:NavBar Grid.Row="0" Title="{Binding Lesson.Title}"/>
+    <Grid Grid.Row="1" RowDefinitions="*,Auto">
 
         <!-- Loading -->
         <ActivityIndicator Grid.Row="0"
@@ -105,6 +106,7 @@
             </VerticalStackLayout>
         </Border>
 
+    </Grid>
     </Grid>
 
 </ContentPage>

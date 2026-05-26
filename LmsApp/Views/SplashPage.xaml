@@ -10,11 +10,13 @@
 
     <Grid RowDefinitions="*,Auto">
 
-        <VerticalStackLayout Grid.Row="0" VerticalOptions="Center" HorizontalOptions="Center" Spacing="8">
-            <Label Text="LMS" FontSize="72" FontFamily="OpenSansSemibold"
+        <VerticalStackLayout Grid.Row="0" VerticalOptions="Center" HorizontalOptions="Center" Spacing="4">
+            <Label Text="Maximum Education" FontSize="44" FontFamily="OpenSansSemibold"
                    TextColor="White" HorizontalOptions="Center"/>
-            <Label Text="Корпоративное обучение" FontSize="18"
-                   TextColor="White" Opacity="0.85" HorizontalOptions="Center"/>
+            <Label Text="B2B" FontSize="28" FontFamily="OpenSansSemibold"
+                   TextColor="White" Opacity="0.9" HorizontalOptions="Center"/>
+            <Label Text="Корпоративное обучение" FontSize="16"
+                   TextColor="White" Opacity="0.75" HorizontalOptions="Center" Margin="0,8,0,0"/>
             <ActivityIndicator IsRunning="{Binding IsBusy}" Color="White" Margin="0,32,0,0"
                                HeightRequest="32" WidthRequest="32"/>
         </VerticalStackLayout>

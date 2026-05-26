@@ -9,6 +9,13 @@
 
     <VerticalStackLayout Spacing="0">
 
+        <!-- Brand label -->
+        <Label Text="Maximum Education B2B"
+               FontFamily="OpenSansSemibold"
+               FontSize="13"
+               TextColor="{StaticResource Primary}"
+               Margin="16,10,16,0"/>
+
         <!-- Search bar -->
         <SearchBar Placeholder="Поиск курсов..."
                    Text="{Binding SearchText}"

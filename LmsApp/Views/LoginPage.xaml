@@ -5,75 +5,110 @@
              x:Class="LmsApp.Views.LoginPage"
              x:DataType="vm:LoginViewModel"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource OffBlack}}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}">
 
     <ScrollView>
-        <Grid RowDefinitions="*,Auto" MinimumHeightRequest="600">
+        <Grid RowDefinitions="*,Auto" MinimumHeightRequest="620">
 
-            <VerticalStackLayout Grid.Row="0" VerticalOptions="Center" Padding="32" Spacing="0">
+            <VerticalStackLayout Grid.Row="0" VerticalOptions="Center" Padding="28,0" Spacing="0">
 
-                <!-- Logo -->
-                <Label Text="LMS" FontSize="56" FontFamily="OpenSansSemibold"
-                       TextColor="{StaticResource Primary}" HorizontalOptions="Center" Margin="0,0,0,4"/>
-                <Label Text="Корпоративное обучение" FontSize="14"
-                       TextColor="{StaticResource Gray500}" HorizontalOptions="Center" Margin="0,0,0,48"/>
+                <!-- Logo mark -->
+                <VerticalStackLayout HorizontalOptions="Center" Spacing="0" Margin="0,0,0,56">
+                    <Label Text="Maximum Education"
+                           FontSize="30"
+                           FontFamily="OpenSansSemibold"
+                           TextColor="{StaticResource Primary}"
+                           HorizontalOptions="Center"
+                           CharacterSpacing="-0.3"/>
+                    <Label Text="B2B"
+                           FontSize="16"
+                           FontFamily="OpenSansSemibold"
+                           TextColor="{StaticResource Secondary}"
+                           HorizontalOptions="Center"
+                           CharacterSpacing="3"
+                           Margin="0,2,0,10"/>
+                    <Label Text="Корпоративное обучение"
+                           FontSize="13"
+                           TextColor="{StaticResource Gray400}"
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
 
-                <!-- Title -->
-                <Label Text="Добро пожаловать" Style="{StaticResource H1}" Margin="0,0,0,8"/>
-                <Label Text="Войдите в свой аккаунт" Style="{StaticResource Body}" Margin="0,0,0,32"/>
+                <!-- Welcome heading -->
+                <Label Text="Добро пожаловать"
+                       FontSize="30"
+                       FontFamily="OpenSansSemibold"
+                       TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
+                       CharacterSpacing="-0.5"
+                       Margin="0,0,0,6"/>
+                <Label Text="Войдите в свой аккаунт"
+                       FontSize="15"
+                       TextColor="{StaticResource Gray400}"
+                       Margin="0,0,0,36"/>
 
                 <!-- Error message -->
-                <Border IsVisible="{Binding HasError}" BackgroundColor="{StaticResource ErrorLight}"
-                        StrokeShape="RoundRectangle 12" StrokeThickness="0" Padding="16" Margin="0,0,0,16">
+                <Border IsVisible="{Binding HasError}"
+                        BackgroundColor="{StaticResource ErrorLight}"
+                        StrokeShape="RoundRectangle 14"
+                        StrokeThickness="0"
+                        Padding="16,12"
+                        Margin="0,0,0,16">
                     <Label Text="{Binding ErrorMessage}" TextColor="{StaticResource Error}" FontSize="14"/>
                 </Border>
 
-                <!-- Email -->
-                <Label Text="Email" FontSize="14" FontFamily="OpenSansSemibold"
-                       TextColor="{StaticResource Gray700}" Margin="0,0,0,6"/>
-                <Border StrokeShape="RoundRectangle 12" StrokeThickness="1"
-                        Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                <!-- Email field — pill style -->
+                <Border StrokeShape="RoundRectangle 16"
+                        StrokeThickness="0"
                         BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray800}}"
-                        Margin="0,0,0,16" Padding="0">
+                        Padding="0"
+                        Margin="0,0,0,12">
                     <Entry Text="{Binding Email}"
                            Keyboard="Email"
-                           Placeholder="employee@corp"
+                           Placeholder="Email"
                            PlaceholderColor="{StaticResource Gray400}"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
                            FontSize="16"
-                           Margin="16,0"
-                           HeightRequest="52"
+                           BackgroundColor="Transparent"
+                           Margin="20,0"
+                           HeightRequest="54"
                            ReturnType="Next"/>
                 </Border>
 
-                <!-- Password -->
-                <Label Text="Пароль" FontSize="14" FontFamily="OpenSansSemibold"
-                       TextColor="{StaticResource Gray700}" Margin="0,0,0,6"/>
-                <Border StrokeShape="RoundRectangle 12" StrokeThickness="1"
-                        Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                <!-- Password field — pill style -->
+                <Border StrokeShape="RoundRectangle 16"
+                        StrokeThickness="0"
                         BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray800}}"
-                        Margin="0,0,0,8" Padding="0">
+                        Padding="0"
+                        Margin="0,0,0,32">
                     <Entry Text="{Binding Password}"
                            IsPassword="True"
-                           Placeholder="••••••"
+                           Placeholder="Пароль"
                            PlaceholderColor="{StaticResource Gray400}"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
                            FontSize="16"
-                           Margin="16,0"
-                           HeightRequest="52"
+                           BackgroundColor="Transparent"
+                           Margin="20,0"
+                           HeightRequest="54"
                            ReturnType="Go"
                            ReturnCommand="{Binding LoginCommand}"/>
                 </Border>
 
-                <!-- Login button -->
+                <!-- Sign-in button — pill shape -->
                 <Button Text="Войти"
                         Command="{Binding LoginCommand}"
-                        Style="{StaticResource PrimaryButton}"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="17"
+                        CornerRadius="27"
+                        HeightRequest="54"
                         HorizontalOptions="Fill"
                         IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBool}}"
-                        Margin="0,24,0,16"/>
+                        Margin="0,0,0,16"/>
 
-                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
-                                   Color="{StaticResource Primary}" HorizontalOptions="Center"
-                                   Margin="0,0,0,16"/>
+                <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                   IsVisible="{Binding IsBusy}"
+                                   Color="{StaticResource Primary}"
+                                   HorizontalOptions="Center"/>
 
             </VerticalStackLayout>
 

@@ -15,7 +15,7 @@ public class CircularProgressView : GraphicsView
             propertyChanged: (b, _, __) => ((CircularProgressView)b).Invalidate());
 
     public static readonly BindableProperty ProgressColorProperty =
-        BindableProperty.Create(nameof(ProgressColor), typeof(Color), typeof(CircularProgressView), Color.FromArgb("#4F46E5"),
+        BindableProperty.Create(nameof(ProgressColor), typeof(Color), typeof(CircularProgressView), Color.FromArgb("#F97316"),
             propertyChanged: (b, _, __) => ((CircularProgressView)b).Invalidate());
 
     public static readonly BindableProperty TextProperty =

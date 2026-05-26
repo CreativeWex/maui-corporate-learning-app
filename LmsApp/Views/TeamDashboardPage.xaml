@@ -16,6 +16,12 @@
         <ScrollView>
             <VerticalStackLayout Padding="16" Spacing="16">
 
+                <!-- Brand label -->
+                <Label Text="Maximum Education B2B"
+                       FontFamily="OpenSansSemibold"
+                       FontSize="13"
+                       TextColor="{StaticResource Primary}"/>
+
                 <!-- Loading -->
                 <ActivityIndicator IsRunning="{Binding IsBusy}"
                                    IsVisible="{Binding IsBusy}"

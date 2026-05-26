@@ -12,6 +12,12 @@
         <ScrollView>
             <VerticalStackLayout Padding="16" Spacing="20">
 
+                <!-- Brand label -->
+                <Label Text="Maximum Education B2B"
+                       FontFamily="OpenSansSemibold"
+                       FontSize="13"
+                       TextColor="{StaticResource Primary}"/>
+
                 <!-- Header -->
                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                     <VerticalStackLayout Grid.Column="0" Spacing="2">

@@ -9,16 +9,22 @@
     <ScrollView>
         <VerticalStackLayout Padding="16" Spacing="20">
 
+            <!-- Brand label -->
+            <Label Text="Maximum Education B2B"
+                   FontFamily="OpenSansSemibold"
+                   FontSize="13"
+                   TextColor="{StaticResource Primary}"/>
+
             <!-- User info -->
             <Border Style="{StaticResource CardBorder}">
                 <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
                     <Border HeightRequest="80"
                             WidthRequest="80"
                             StrokeShape="RoundRectangle 40"
-                            BackgroundColor="{StaticResource Primary}"
+                            BackgroundColor="{StaticResource Gray100}"
                             HorizontalOptions="Center">
                         <Label Text="👤"
-                               TextColor="{StaticResource White}"
+                               TextColor="{StaticResource Primary}"
                                FontSize="36"
                                HorizontalOptions="Center"
                                VerticalOptions="Center"/>

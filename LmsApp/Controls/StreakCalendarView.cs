@@ -65,11 +65,11 @@ public class StreakCalendarView : GraphicsView
 
         static Color GetColor(int minutes) => minutes switch
         {
-            0      => Color.FromArgb("#EEF2FF"),
-            <= 15  => Color.FromArgb("#C7D2FE"),
-            <= 30  => Color.FromArgb("#818CF8"),
-            <= 60  => Color.FromArgb("#4F46E5"),
-            _      => Color.FromArgb("#312E81")
+            0      => Color.FromArgb("#FFF7ED"),
+            <= 15  => Color.FromArgb("#FED7AA"),
+            <= 30  => Color.FromArgb("#FB923C"),
+            <= 60  => Color.FromArgb("#F97316"),
+            _      => Color.FromArgb("#EA580C")
         };
     }
 }

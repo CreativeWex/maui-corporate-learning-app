@@ -3,11 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:LmsApp.ViewModels"
              xmlns:m="clr-namespace:LmsApp.Models.Domain"
+             xmlns:controls="clr-namespace:LmsApp.Controls"
              x:Class="LmsApp.Views.LeaderboardPage"
              x:DataType="vm:LeaderboardViewModel"
+             SafeAreaEdges="All"
+             Shell.NavBarIsVisible="False"
              Title="Рейтинг">
 
-    <RefreshView Command="{Binding RefreshCommand}"
+    <Grid RowDefinitions="Auto,*">
+    <controls:NavBar Grid.Row="0" Title="Рейтинг"/>
+    <RefreshView Grid.Row="1"
+                 Command="{Binding RefreshCommand}"
                  IsRefreshing="{Binding IsRefreshing}">
         <ScrollView>
             <VerticalStackLayout Padding="16" Spacing="16">
@@ -157,5 +163,6 @@
             </VerticalStackLayout>
         </ScrollView>
     </RefreshView>
+    </Grid>
 
 </ContentPage>

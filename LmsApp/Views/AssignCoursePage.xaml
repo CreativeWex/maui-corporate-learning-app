@@ -3,11 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:LmsApp.ViewModels"
              xmlns:m="clr-namespace:LmsApp.Models.Domain"
+             xmlns:controls="clr-namespace:LmsApp.Controls"
              x:Class="LmsApp.Views.AssignCoursePage"
              x:DataType="vm:AssignCourseViewModel"
+             SafeAreaEdges="All"
+             Shell.NavBarIsVisible="False"
              Title="Назначить курс">
 
-    <Grid RowDefinitions="Auto,*,Auto" Padding="16" RowSpacing="12">
+    <Grid RowDefinitions="Auto,*">
+    <controls:NavBar Grid.Row="0" Title="Назначить курс"/>
+    <Grid Grid.Row="1" RowDefinitions="Auto,*,Auto" Padding="16" RowSpacing="12">
 
         <!-- Step indicator -->
         <Grid Grid.Row="0" ColumnDefinitions="*,Auto,*,Auto,*" ColumnSpacing="4">
@@ -206,6 +211,7 @@
                     IsVisible="{Binding IsStep3}"/>
         </Grid>
 
+    </Grid>
     </Grid>
 
 </ContentPage>

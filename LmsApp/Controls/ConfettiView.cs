@@ -54,9 +54,9 @@ public class ConfettiView : GraphicsView
         private static readonly Random Rng = new();
         private static readonly Color[] Colors =
         [
-            Color.FromArgb("#4F46E5"), Color.FromArgb("#10B981"),
+            Color.FromArgb("#F97316"), Color.FromArgb("#10B981"),
             Color.FromArgb("#F59E0B"), Color.FromArgb("#EF4444"),
-            Color.FromArgb("#7C3AED"), Color.FromArgb("#3B82F6")
+            Color.FromArgb("#EA580C"), Color.FromArgb("#FB923C")
         ];
 
         public float X = Rng.NextSingle() * 400;

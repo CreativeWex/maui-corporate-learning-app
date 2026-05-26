@@ -3,15 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:LmsApp.ViewModels"
              xmlns:m="clr-namespace:LmsApp.Models.Domain"
+             xmlns:controls="clr-namespace:LmsApp.Controls"
              x:Class="LmsApp.Views.CourseDetailPage"
              x:DataType="vm:CourseDetailViewModel"
+             SafeAreaEdges="All"
+             Shell.NavBarIsVisible="False"
              Title="{Binding Course.Title}">
 
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="←" Command="{Binding GoBackCommand}"/>
-    </ContentPage.ToolbarItems>
-
-    <ScrollView>
+    <Grid RowDefinitions="Auto,*">
+    <controls:NavBar Grid.Row="0" Title="{Binding Course.Title}"/>
+    <ScrollView Grid.Row="1">
         <VerticalStackLayout Padding="16" Spacing="16">
 
             <!-- Loading -->
@@ -99,5 +100,6 @@
 
         </VerticalStackLayout>
     </ScrollView>
+    </Grid>
 
 </ContentPage>

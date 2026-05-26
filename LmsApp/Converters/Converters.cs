@@ -48,7 +48,7 @@ public class StatusToColorConverter : IValueConverter
             return status switch
             {
                 ModuleStatus.Completed  => Color.FromArgb("#10B981"),
-                ModuleStatus.InProgress => Color.FromArgb("#4F46E5"),
+                ModuleStatus.InProgress => Color.FromArgb("#F97316"),
                 ModuleStatus.Locked     => Color.FromArgb("#9CA3AF"),
                 _                       => Color.FromArgb("#6B7280")
             };
@@ -138,7 +138,7 @@ public class ProgressToColorConverter : IValueConverter
             return progress switch
             {
                 >= 80 => Color.FromArgb("#10B981"),
-                >= 50 => Color.FromArgb("#4F46E5"),
+                >= 50 => Color.FromArgb("#F97316"),
                 >= 30 => Color.FromArgb("#F59E0B"),
                 _     => Color.FromArgb("#EF4444")
             };
