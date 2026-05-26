@@ -1,3 +1,4 @@
+using LmsApp.Helpers;
 using LmsApp.ViewModels;
 
 namespace LmsApp.Views;
@@ -8,5 +9,6 @@ public partial class LessonPage : ContentPage
     {
         InitializeComponent();
         BindingContext = vm;
+        Nav.AttachBackButton(this);
     }
 }

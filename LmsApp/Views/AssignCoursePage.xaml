@@ -68,12 +68,21 @@
                         ItemsSource="{Binding AvailableCourses}"
                         IsVisible="{Binding IsStep1}">
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="m:Course">
+                <DataTemplate x:DataType="vm:SelectableCourse">
                     <Border Margin="0,4"
                             Padding="16"
                             StrokeShape="RoundRectangle 10"
-                            StrokeThickness="2"
-                            Stroke="{StaticResource Gray200}">
+                            StrokeThickness="2">
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+                                <Setter Property="Stroke" Value="{StaticResource Primary}"/>
+                                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryLight}"/>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="False">
+                                <Setter Property="Stroke" Value="{StaticResource Gray200}"/>
+                                <Setter Property="BackgroundColor" Value="{StaticResource White}"/>
+                            </DataTrigger>
+                        </Border.Triggers>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AssignCourseViewModel}}, Path=SelectCourseCommand}"
@@ -86,6 +95,12 @@
                                 <Label Text="{Binding DurationMinutes, StringFormat='{0} ч.'}"
                                        Style="{StaticResource Caption}"/>
                             </VerticalStackLayout>
+                            <Label Grid.Column="1"
+                                   Text="✓"
+                                   FontSize="20"
+                                   TextColor="{StaticResource Success}"
+                                   VerticalOptions="Center"
+                                   IsVisible="{Binding IsSelected}"/>
                         </Grid>
                     </Border>
                 </DataTemplate>
@@ -96,6 +111,12 @@
         <CollectionView Grid.Row="1"
                         ItemsSource="{Binding Members}"
                         IsVisible="{Binding IsStep2}">
+            <CollectionView.EmptyView>
+                <Label Text="В вашей команде нет сотрудников"
+                       TextColor="{StaticResource Gray500}"
+                       HorizontalOptions="Center"
+                       Margin="0,32"/>
+            </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="vm:SelectableTeamMember">
                     <Border Margin="0,4"

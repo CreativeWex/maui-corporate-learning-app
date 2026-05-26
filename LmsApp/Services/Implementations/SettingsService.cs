@@ -12,8 +12,7 @@ public class SettingsService : ISettingsService
         NotifyAssignments = Preferences.Get("notify_assignments", true),
         NotifyDeadlines = Preferences.Get("notify_deadlines", true),
         NotifyAchievements = Preferences.Get("notify_achievements", true),
-        NotifyStreak = Preferences.Get("notify_streak", true),
-        IsAnonymousInLeaderboard = Preferences.Get("anonymous", false)
+        NotifyStreak = Preferences.Get("notify_streak", true)
     };
 
     public void SetTheme(string theme)
@@ -24,9 +23,6 @@ public class SettingsService : ISettingsService
 
     public void SetNotificationPref(string key, bool value)
         => Preferences.Set(key, value);
-
-    public void SetAnonymous(bool anonymous)
-        => Preferences.Set("anonymous", anonymous);
 
     public void SetLanguage(string lang)
         => Preferences.Set("lang", lang);

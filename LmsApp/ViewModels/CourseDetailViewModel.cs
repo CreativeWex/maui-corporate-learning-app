@@ -11,6 +11,7 @@ namespace LmsApp.ViewModels;
 public partial class CourseDetailViewModel : BaseViewModel
 {
     private readonly ICourseService _courses;
+    private readonly ISessionService _session;
 
     [ObservableProperty] private int _courseId;
     [ObservableProperty] private CourseDetail? _course;
@@ -20,9 +21,10 @@ public partial class CourseDetailViewModel : BaseViewModel
     [ObservableProperty] private bool _hasDeadlineWarning;
     [ObservableProperty] private string _deadlineText = string.Empty;
 
-    public CourseDetailViewModel(ICourseService courses, IDialogService dialog) : base(dialog)
+    public CourseDetailViewModel(ICourseService courses, ISessionService session, IDialogService dialog) : base(dialog)
     {
         _courses = courses;
+        _session = session;
     }
 
     partial void OnCourseIdChanged(int value) => LoadCommand.Execute(null);
@@ -33,7 +35,7 @@ public partial class CourseDetailViewModel : BaseViewModel
         if (CourseId <= 0) return;
         await RunSafeAsync(async () =>
         {
-            Course = await _courses.GetCourseDetailAsync(CourseId);
+            Course = await _courses.GetCourseDetailAsync(CourseId, _session.CurrentUser?.Id ?? 0);
             if (Course == null) return;
 
             Modules = new ObservableCollection<Module>(Course.Modules);

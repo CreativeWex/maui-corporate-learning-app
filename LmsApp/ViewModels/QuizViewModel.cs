@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LmsApp.Helpers;
 using LmsApp.Models.Domain;
 using LmsApp.Models.Enums;
 using LmsApp.Services.Interfaces;
@@ -18,13 +19,22 @@ public partial class QuizViewModel : BaseViewModel
     [ObservableProperty] private int _quizId;
     [ObservableProperty] private Quiz? _quiz;
     [ObservableProperty] private Question? _currentQuestion;
-    [ObservableProperty] private int _questionIndex;
-    [ObservableProperty] private int _totalQuestions;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(QuestionNumber))]
+    [NotifyPropertyChangedFor(nameof(QuestionProgressFraction))]
+    private int _questionIndex;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(QuestionProgressFraction))]
+    private int _totalQuestions;
+
+    public int QuestionNumber => QuestionIndex + 1;
+    public double QuestionProgressFraction => TotalQuestions > 0 ? (double)(QuestionIndex + 1) / TotalQuestions : 0;
+
     [ObservableProperty] private bool _isAnswered;
     [ObservableProperty] private bool _isCorrect;
     [ObservableProperty] private string _explanation = string.Empty;
-    [ObservableProperty] private int _attemptsLeft;
-    [ObservableProperty] private bool _noAttemptsLeft;
     [ObservableProperty] private List<int> _selectedOptionIndices = new();
     [ObservableProperty] private ObservableCollection<OptionViewModel> _options = new();
 
@@ -48,14 +58,16 @@ public partial class QuizViewModel : BaseViewModel
         if (QuizId <= 0) return;
         await RunSafeAsync(async () =>
         {
-            var userId = _session.CurrentUser?.Id ?? 0;
             var quiz = await _quizService.GetQuizAsync(QuizId);
             if (quiz == null) return;
 
-            var left = await _quizService.GetAttemptsLeftAsync(userId, QuizId, quiz.MaxAttempts);
-            AttemptsLeft = left;
-            NoAttemptsLeft = left <= 0;
-            if (NoAttemptsLeft) return;
+            if (quiz.Questions.Count == 0)
+            {
+                if (DialogService != null)
+                    await DialogService.ShowAlertAsync("Тест недоступен", "В этом тесте пока нет вопросов");
+                await Nav.GoBackAsync();
+                return;
+            }
 
             Quiz = quiz;
             TotalQuestions = quiz.Questions.Count;
@@ -74,8 +86,9 @@ public partial class QuizViewModel : BaseViewModel
         IsCorrect = false;
         Explanation = string.Empty;
         SelectedOptionIndices = new();
+        var isMulti = CurrentQuestion.Type == QuestionType.MultipleChoice;
         Options = new ObservableCollection<OptionViewModel>(
-            CurrentQuestion.Options.Select((opt, i) => new OptionViewModel { Index = i, Text = opt }));
+            CurrentQuestion.Options.Select((opt, i) => new OptionViewModel { Index = i, Text = opt, IsMultiChoice = isMulti }));
     }
 
     [RelayCommand]
@@ -163,10 +176,10 @@ public partial class QuizViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    static async Task GoBackAsync()
+    static async Task ExitQuizAsync()
     {
         bool confirm = await Shell.Current.DisplayAlertAsync("Выйти из теста?", "Прогресс будет потерян", "Выйти", "Остаться");
-        if (confirm) await Shell.Current.GoToAsync("..");
+        if (confirm) await Nav.GoBackAsync();
     }
 }
 
@@ -174,6 +187,7 @@ public partial class OptionViewModel : ObservableObject
 {
     public int Index { get; set; }
     public string Text { get; set; } = string.Empty;
+    public bool IsMultiChoice { get; set; }
     [ObservableProperty] private bool _isSelected;
     [ObservableProperty] private bool _isCorrect;
     [ObservableProperty] private bool _isWrong;

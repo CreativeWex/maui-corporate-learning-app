@@ -8,7 +8,7 @@
              Title="{Binding Course.Title}">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="←" Command="{Binding LoadCommand}"/>
+        <ToolbarItem Text="←" Command="{Binding GoBackCommand}"/>
     </ContentPage.ToolbarItems>
 
     <ScrollView>

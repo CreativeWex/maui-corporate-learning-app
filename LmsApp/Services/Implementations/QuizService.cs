@@ -10,12 +10,14 @@ public class QuizService : IQuizService
     private readonly IApiClient _api;
     private readonly ILocalRepository _repo;
     private readonly IGamificationService _gamification;
+    private readonly ICertificateService _certService;
 
-    public QuizService(IApiClient api, ILocalRepository repo, IGamificationService gamification)
+    public QuizService(IApiClient api, ILocalRepository repo, IGamificationService gamification, ICertificateService certService)
     {
         _api = api;
         _repo = repo;
         _gamification = gamification;
+        _certService = certService;
     }
 
     public async Task<Quiz?> GetQuizAsync(int id)
@@ -62,6 +64,31 @@ public class QuizService : IQuizService
         result.AttemptNumber = attempt;
 
         await _api.SubmitQuizResultAsync(result);
+
+        if (result.Passed)
+        {
+            var quizEntity = await _repo.GetQuizByIdAsync(result.QuizId);
+            if (quizEntity != null)
+            {
+                await _repo.UpsertUserModuleProgressAsync(result.UserId, quizEntity.ModuleId, (int)ModuleStatus.Completed);
+
+                var modules = await _repo.GetModulesByCourseIdAsync(quizEntity.CourseId);
+                var current = modules.FirstOrDefault(m => m.Id == quizEntity.ModuleId);
+                if (current != null)
+                {
+                    var next = modules.FirstOrDefault(m => m.OrderIndex == current.OrderIndex + 1);
+                    if (next != null)
+                    {
+                        var nextProgress = await _repo.GetUserModuleProgressByIdAsync(result.UserId, next.Id);
+                        if (nextProgress == null || nextProgress.Status == (int)ModuleStatus.Locked)
+                            await _repo.UpsertUserModuleProgressAsync(result.UserId, next.Id, (int)ModuleStatus.NotStarted);
+                    }
+                }
+
+                if (quizEntity.IsFinal)
+                    await _certService.GenerateAsync(result.UserId, quizEntity.CourseId);
+            }
+        }
 
         int xp = result.PassedPercent switch
         {

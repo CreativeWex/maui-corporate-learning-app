@@ -1,6 +1,7 @@
 using LmsApp.Infrastructure;
 using LmsApp.Infrastructure.Entities;
 using LmsApp.Models.Domain;
+using LmsApp.Models.Enums;
 using LmsApp.Services.Interfaces;
 
 namespace LmsApp.Services.Implementations;
@@ -16,7 +17,7 @@ public class CourseService : ICourseService
         _repo = repo;
     }
 
-    public async Task<List<Course>> GetCatalogAsync(string? filter = null, string? search = null)
+    public async Task<List<Course>> GetCatalogAsync(int userId = 0, string? filter = null, string? search = null)
     {
         var courses = await _api.GetCoursesAsync();
 
@@ -32,14 +33,40 @@ public class CourseService : ICourseService
                 c.AuthorName.Contains(lower, StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
-        return courses.OrderByDescending(c => c.IsAssigned)
-                      .ThenByDescending(c => c.IsNew)
-                      .ThenByDescending(c => c.Rating)
-                      .ToList();
+        var ordered = courses.OrderByDescending(c => c.IsAssigned)
+                             .ThenByDescending(c => c.IsNew)
+                             .ThenByDescending(c => c.Rating)
+                             .ToList();
+
+        if (userId > 0)
+        {
+            foreach (var c in ordered)
+                c.ProgressPercent = await GetCourseProgressAsync(userId, c.Id);
+        }
+
+        return ordered;
     }
 
-    public async Task<CourseDetail?> GetCourseDetailAsync(int id)
-        => await _api.GetCourseDetailAsync(id);
+    public async Task<CourseDetail?> GetCourseDetailAsync(int id, int userId)
+    {
+        var detail = await _api.GetCourseDetailAsync(id);
+        if (detail == null) return null;
+
+        var userProgress = await _repo.GetUserModuleProgressAsync(userId, id);
+        if (!userProgress.Any())
+        {
+            foreach (var m in detail.Modules.OrderBy(m => m.OrderIndex))
+                m.Status = m.OrderIndex == 0 ? ModuleStatus.NotStarted : ModuleStatus.Locked;
+        }
+        else
+        {
+            var map = userProgress.ToDictionary(p => p.ModuleId, p => p.Status);
+            foreach (var m in detail.Modules)
+                m.Status = map.TryGetValue(m.Id, out var s) ? (ModuleStatus)s : ModuleStatus.Locked;
+        }
+
+        return detail;
+    }
 
     public async Task<List<Course>> GetContinueLearningAsync(int userId)
     {
@@ -92,7 +119,10 @@ public class CourseService : ICourseService
     {
         var modules = await _repo.GetModulesByCourseIdAsync(courseId);
         if (!modules.Any()) return 0;
-        int completed = modules.Count(m => m.Status == (int)LmsApp.Models.Enums.ModuleStatus.Completed);
+        var userProgress = await _repo.GetUserModuleProgressAsync(userId, courseId);
+        if (!userProgress.Any()) return 0;
+        var map = userProgress.ToDictionary(p => p.ModuleId, p => p.Status);
+        int completed = modules.Count(m => map.TryGetValue(m.Id, out var s) && s == (int)ModuleStatus.Completed);
         return (int)Math.Round((double)completed / modules.Count * 100);
     }
 }

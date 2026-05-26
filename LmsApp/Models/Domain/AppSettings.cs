@@ -8,5 +8,4 @@ public class AppSettings
     public bool NotifyDeadlines { get; set; } = true;
     public bool NotifyAchievements { get; set; } = true;
     public bool NotifyStreak { get; set; } = true;
-    public bool IsAnonymousInLeaderboard { get; set; }
 }

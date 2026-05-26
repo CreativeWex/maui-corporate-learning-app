@@ -26,19 +26,30 @@ public class LessonService : ILessonService
         return await _api.GetLessonAsync(id);
     }
 
+    public async Task<bool> IsCompletedByUserAsync(int userId, int moduleId)
+    {
+        if (userId <= 0 || moduleId <= 0) return false;
+        var progress = await _repo.GetUserModuleProgressByIdAsync(userId, moduleId);
+        return progress?.Status == (int)ModuleStatus.Completed;
+    }
+
     public async Task MarkCompletedAsync(int lessonId, int moduleId, int courseId, int userId)
     {
         await _repo.MarkLessonCompletedAsync(lessonId);
-        await _repo.UpdateModuleStatusAsync(moduleId, (int)ModuleStatus.Completed);
+        await _repo.UpsertUserModuleProgressAsync(userId, moduleId, (int)ModuleStatus.Completed);
 
-        // Unlock next module
+        // Unlock next module for this user
         var modules = await _repo.GetModulesByCourseIdAsync(courseId);
         var current = modules.FirstOrDefault(m => m.Id == moduleId);
         if (current != null)
         {
             var next = modules.FirstOrDefault(m => m.OrderIndex == current.OrderIndex + 1);
-            if (next != null && next.Status == (int)ModuleStatus.Locked)
-                await _repo.UpdateModuleStatusAsync(next.Id, (int)ModuleStatus.NotStarted);
+            if (next != null)
+            {
+                var nextProgress = await _repo.GetUserModuleProgressByIdAsync(userId, next.Id);
+                if (nextProgress == null || nextProgress.Status == (int)ModuleStatus.Locked)
+                    await _repo.UpsertUserModuleProgressAsync(userId, next.Id, (int)ModuleStatus.NotStarted);
+            }
         }
 
         await _gamification.AwardXpAsync(userId, 10);

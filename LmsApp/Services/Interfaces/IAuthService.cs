@@ -9,7 +9,4 @@ public interface IAuthService
     Task LogoutAsync();
     Task<string?> GetSavedTokenAsync();
     Task<User?> GetSavedUserAsync();
-    bool IsLockedOut { get; }
-    DateTime? LockoutUntil { get; }
-    int AttemptsLeft { get; }
 }

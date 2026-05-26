@@ -140,6 +140,28 @@ public static class SeedData
             CorrectIndicesJson = JsonSerializer.Serialize(new[] { 0 }),
             Explanation = "Оператор 'in': if x in [1,2,3]:" },
 
+        // Quiz 2: Коммуникации
+        new() { Id = 13, QuizId = 2, Text = "Что является основой активного слушания?",
+            Type = (int)QuestionType.SingleChoice,
+            OptionsJson = JsonSerializer.Serialize(new[] { "Полная концентрация на говорящем", "Быстрый ответ собеседнику", "Перебивание для уточнений", "Молчаливое присутствие" }),
+            CorrectIndicesJson = JsonSerializer.Serialize(new[] { 0 }),
+            Explanation = "Активное слушание — это полная сосредоточенность на говорящем, понимание его слов и чувств" },
+        new() { Id = 14, QuizId = 2, Text = "Невербальная коммуникация включает в себя жесты, мимику и позу?",
+            Type = (int)QuestionType.TrueFalse,
+            OptionsJson = JsonSerializer.Serialize(new[] { "Верно", "Неверно" }),
+            CorrectIndicesJson = JsonSerializer.Serialize(new[] { 0 }),
+            Explanation = "Невербальная коммуникация — это передача информации без слов: через жесты, мимику, позу и взгляд" },
+        new() { Id = 15, QuizId = 2, Text = "Какие техники относятся к активному слушанию?",
+            Type = (int)QuestionType.MultipleChoice,
+            OptionsJson = JsonSerializer.Serialize(new[] { "Перефразирование услышанного", "Немедленное возражение", "Уточняющие вопросы", "Зрительный контакт" }),
+            CorrectIndicesJson = JsonSerializer.Serialize(new[] { 0, 2, 3 }),
+            Explanation = "Перефразирование, уточняющие вопросы и зрительный контакт — ключевые техники активного слушания" },
+        new() { Id = 16, QuizId = 2, Text = "Какой тип коммуникации предполагает передачу информации через email и документы?",
+            Type = (int)QuestionType.SingleChoice,
+            OptionsJson = JsonSerializer.Serialize(new[] { "Письменная", "Вербальная", "Невербальная", "Визуальная" }),
+            CorrectIndicesJson = JsonSerializer.Serialize(new[] { 0 }),
+            Explanation = "Письменная коммуникация — email, документы, сообщения в мессенджерах" },
+
         // Quiz 3: ИБ
         new() { Id = 6,  QuizId = 3, Text = "Что такое фишинг?",
             Type = (int)QuestionType.SingleChoice,
@@ -178,6 +200,28 @@ public static class SeedData
             OptionsJson = JsonSerializer.Serialize(new[] { "Product Owner", "Project Manager", "Scrum Master", "Development Team" }),
             CorrectIndicesJson = JsonSerializer.Serialize(new[] { 0, 2, 3 }),
             Explanation = "В Scrum три роли: Product Owner, Scrum Master и Development Team. Project Manager — не роль Scrum" },
+
+        // Quiz 5: Git
+        new() { Id = 17, QuizId = 5, Text = "Какая команда инициализирует новый Git-репозиторий?",
+            Type = (int)QuestionType.SingleChoice,
+            OptionsJson = JsonSerializer.Serialize(new[] { "git init", "git start", "git create", "git new" }),
+            CorrectIndicesJson = JsonSerializer.Serialize(new[] { 0 }),
+            Explanation = "git init создаёт новый репозиторий в текущей директории" },
+        new() { Id = 18, QuizId = 5, Text = "git merge объединяет две ветки в одну?",
+            Type = (int)QuestionType.TrueFalse,
+            OptionsJson = JsonSerializer.Serialize(new[] { "Верно", "Неверно" }),
+            CorrectIndicesJson = JsonSerializer.Serialize(new[] { 0 }),
+            Explanation = "git merge интегрирует изменения из одной ветки в другую" },
+        new() { Id = 19, QuizId = 5, Text = "Какие команды Git используются для работы с ветками?",
+            Type = (int)QuestionType.MultipleChoice,
+            OptionsJson = JsonSerializer.Serialize(new[] { "git branch", "git checkout", "git push", "git fetch" }),
+            CorrectIndicesJson = JsonSerializer.Serialize(new[] { 0, 1 }),
+            Explanation = "git branch создаёт ветки, git checkout переключается между ними" },
+        new() { Id = 20, QuizId = 5, Text = "Что такое Pull Request?",
+            Type = (int)QuestionType.SingleChoice,
+            OptionsJson = JsonSerializer.Serialize(new[] { "Запрос на слияние ветки с code review", "Команда для получения изменений с сервера", "Создание новой ветки", "Откат последнего коммита" }),
+            CorrectIndicesJson = JsonSerializer.Serialize(new[] { 0 }),
+            Explanation = "Pull Request — механизм code review перед слиянием ветки в основную" },
     ];
 
     public static List<AssignmentEntity> Assignments(DateTime now) =>
@@ -263,6 +307,18 @@ public static class SeedData
         }
         return sessions;
     }
+
+    public static List<UserModuleProgressEntity> UserModuleProgress() =>
+    [
+        // User 1 (employee@corp): Python course
+        new() { UserId = 1, ModuleId = 1, Status = (int)ModuleStatus.Completed },
+        new() { UserId = 1, ModuleId = 2, Status = (int)ModuleStatus.Completed },
+        new() { UserId = 1, ModuleId = 3, Status = (int)ModuleStatus.InProgress },
+        // User 1: ИБ course — all completed
+        new() { UserId = 1, ModuleId = 8,  Status = (int)ModuleStatus.Completed },
+        new() { UserId = 1, ModuleId = 9,  Status = (int)ModuleStatus.Completed },
+        new() { UserId = 1, ModuleId = 10, Status = (int)ModuleStatus.Completed },
+    ];
 
     public static QuizResultEntity CompletedIbQuizResult(DateTime now) => new()
     {

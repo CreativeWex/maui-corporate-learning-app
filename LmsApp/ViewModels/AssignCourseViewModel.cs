@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LmsApp.Helpers;
 using LmsApp.Models.Domain;
 using LmsApp.Models.Dto;
 using LmsApp.Services.Interfaces;
@@ -15,7 +16,7 @@ public partial class AssignCourseViewModel : BaseViewModel
     private readonly ISessionService _session;
 
     // Step 1: Select course
-    [ObservableProperty] private ObservableCollection<Course> _availableCourses = new();
+    [ObservableProperty] private ObservableCollection<SelectableCourse> _availableCourses = new();
     [ObservableProperty] private Course? _selectedCourse;
 
     // Step 2: Select recipients
@@ -50,12 +51,12 @@ public partial class AssignCourseViewModel : BaseViewModel
         {
             var userId = _session.CurrentUser?.Id ?? 0;
             var (courseTask, memberTask) = (
-                _courses.GetCatalogAsync(),
+                _courses.GetCatalogAsync(0),
                 _team.GetTeamMembersAsync(userId)
             );
             await Task.WhenAll(courseTask, memberTask);
 
-            AvailableCourses = new ObservableCollection<Course>(await courseTask);
+            AvailableCourses = new ObservableCollection<SelectableCourse>((await courseTask).Select(c => new SelectableCourse(c)));
             Members = new ObservableCollection<SelectableTeamMember>(
                 (await memberTask).Select(m => new SelectableTeamMember(m)));
             UpdateCanGoNext();
@@ -82,9 +83,11 @@ public partial class AssignCourseViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    void SelectCourse(Course course)
+    void SelectCourse(SelectableCourse course)
     {
-        SelectedCourse = course;
+        foreach (var c in AvailableCourses) c.IsSelected = false;
+        course.IsSelected = true;
+        SelectedCourse = course.Course;
         UpdateCanGoNext();
     }
 
@@ -131,12 +134,40 @@ public partial class AssignCourseViewModel : BaseViewModel
             if (DialogService != null)
                 await DialogService.ShowToastAsync($"Курс назначен {recipientIds.Count} сотрудникам");
 
-            await Shell.Current.GoToAsync("..");
+            ResetForm();
+            await Nav.GoBackAsync();
         });
     }
 
     [RelayCommand]
-    static Task CancelAsync() => Shell.Current.GoToAsync("..");
+    async Task CancelAsync()
+    {
+        ResetForm();
+        await Nav.GoBackAsync();
+    }
+
+    void ResetForm()
+    {
+        foreach (var c in AvailableCourses) c.IsSelected = false;
+        foreach (var m in Members) m.IsSelected = false;
+        SelectedCourse = null;
+        Message = string.Empty;
+        Deadline = DateTime.Today.AddDays(14);
+        IsMandatory = true;
+        CurrentStep = 1;
+    }
+}
+
+public partial class SelectableCourse : ObservableObject
+{
+    public Course Course { get; }
+    public int Id => Course.Id;
+    public string Title => Course.Title;
+    public string Category => Course.Category;
+    public int DurationMinutes => Course.DurationMinutes;
+    [ObservableProperty] private bool _isSelected;
+
+    public SelectableCourse(Course course) => Course = course;
 }
 
 public partial class SelectableTeamMember : ObservableObject

@@ -51,7 +51,7 @@ public partial class QuizResultViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    static Task GoHomAsync() => Shell.Current.GoToAsync("//employee/home");
+    static Task GoHomAsync() => Shell.Current.Navigation.PopToRootAsync();
 
     [RelayCommand]
     Task RetryAsync() => Shell.Current.GoToAsync($"quiz?id={QuizId}");

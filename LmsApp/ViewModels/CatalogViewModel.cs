@@ -9,6 +9,7 @@ namespace LmsApp.ViewModels;
 public partial class CatalogViewModel : BaseViewModel
 {
     private readonly ICourseService _courses;
+    private readonly ISessionService _session;
     private CancellationTokenSource? _searchCts;
 
     [ObservableProperty]
@@ -27,9 +28,10 @@ public partial class CatalogViewModel : BaseViewModel
     public static List<string> Filters { get; } = new()
         { "Все", "Назначенные", "IT", "Soft Skills", "Compliance", "Менеджмент" };
 
-    public CatalogViewModel(ICourseService courses, IDialogService dialog) : base(dialog)
+    public CatalogViewModel(ICourseService courses, ISessionService session, IDialogService dialog) : base(dialog)
     {
         _courses = courses;
+        _session = session;
     }
 
     [RelayCommand]
@@ -47,8 +49,9 @@ public partial class CatalogViewModel : BaseViewModel
             if (t.IsCanceled) return;
             await RunSafeAsync(async () =>
             {
+                var userId = _session.CurrentUser?.Id ?? 0;
                 var filter = SelectedFilter == "Назначенные" ? null : SelectedFilter;
-                var results = await _courses.GetCatalogAsync(filter, SearchText);
+                var results = await _courses.GetCatalogAsync(userId, filter, SearchText);
 
                 if (SelectedFilter == "Назначенные")
                     results = results.Where(c => c.IsAssigned).ToList();

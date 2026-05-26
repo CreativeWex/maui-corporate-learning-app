@@ -6,7 +6,7 @@ namespace LmsApp.Infrastructure;
 public class LocalRepository : ILocalRepository
 {
     private SQLiteAsyncConnection? _db;
-    private const string SeedFlag = "db_seeded_v1";
+    private const string SeedFlag = "db_seeded_v3";
 
     async Task<SQLiteAsyncConnection> Db()
     {
@@ -18,10 +18,23 @@ public class LocalRepository : ILocalRepository
 
     public async Task InitAsync()
     {
+        if (!Preferences.Get(SeedFlag, false))
+        {
+            if (_db != null)
+            {
+                await _db.CloseAsync();
+                _db = null;
+            }
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "lms.db3");
+            if (File.Exists(dbPath))
+                File.Delete(dbPath);
+        }
+
         var db = await Db();
         await db.CreateTablesAsync<UserEntity, CourseEntity, ModuleEntity, LessonEntity, QuizEntity>();
         await db.CreateTablesAsync<QuestionEntity, QuizResultEntity, AssignmentEntity, CertificateEntity, AchievementEntity>();
         await db.CreateTablesAsync<UserAchievementEntity, LearningSessionEntity, LeaderboardEntryEntity>();
+        await db.CreateTableAsync<UserModuleProgressEntity>();
 
         if (!Preferences.Get(SeedFlag, false))
             await SeedAsync(db);
@@ -42,6 +55,7 @@ public class LocalRepository : ILocalRepository
         await db.InsertAllAsync(SeedData.Leaderboard());
         await db.InsertAllAsync(SeedData.LearningSessions(now));
         await db.InsertAsync(SeedData.CompletedIbQuizResult(now));
+        await db.InsertAllAsync(SeedData.UserModuleProgress());
         Preferences.Set(SeedFlag, true);
     }
 
@@ -313,5 +327,40 @@ public class LocalRepository : ILocalRepository
         var db = await Db();
         var entry = await db.Table<LeaderboardEntryEntity>().Where(e => e.UserId == userId).FirstOrDefaultAsync();
         if (entry != null) { entry.TotalXp = xp; await db.UpdateAsync(entry); }
+    }
+
+    // --- Per-user module progress ---
+    public async Task<List<UserModuleProgressEntity>> GetUserModuleProgressAsync(int userId, int courseId)
+    {
+        var db = await Db();
+        var moduleIds = (await db.Table<ModuleEntity>().Where(m => m.CourseId == courseId).ToListAsync())
+            .Select(m => m.Id).ToHashSet();
+        var all = await db.Table<UserModuleProgressEntity>().Where(p => p.UserId == userId).ToListAsync();
+        return all.Where(p => moduleIds.Contains(p.ModuleId)).ToList();
+    }
+
+    public async Task<UserModuleProgressEntity?> GetUserModuleProgressByIdAsync(int userId, int moduleId)
+    {
+        var db = await Db();
+        return await db.Table<UserModuleProgressEntity>()
+            .Where(p => p.UserId == userId && p.ModuleId == moduleId)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task UpsertUserModuleProgressAsync(int userId, int moduleId, int status)
+    {
+        var db = await Db();
+        var existing = await db.Table<UserModuleProgressEntity>()
+            .Where(p => p.UserId == userId && p.ModuleId == moduleId)
+            .FirstOrDefaultAsync();
+        if (existing != null)
+        {
+            existing.Status = status;
+            await db.UpdateAsync(existing);
+        }
+        else
+        {
+            await db.InsertAsync(new UserModuleProgressEntity { UserId = userId, ModuleId = moduleId, Status = status });
+        }
     }
 }

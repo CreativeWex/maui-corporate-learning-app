@@ -58,6 +58,15 @@ public partial class ProfileViewModel : BaseViewModel
     }
 
     [RelayCommand]
+    static Task OpenCertificatesAsync() => Shell.Current.GoToAsync("certificates");
+
+    [RelayCommand]
+    static Task OpenAchievementsAsync() => Shell.Current.GoToAsync("achievements");
+
+    [RelayCommand]
+    static Task OpenLeaderboardAsync() => Shell.Current.GoToAsync("leaderboard");
+
+    [RelayCommand]
     async Task LogoutAsync()
     {
         bool confirm = DialogService == null || await DialogService.ShowConfirmAsync("Выйти?", "Вы уверены, что хотите выйти?");

@@ -22,12 +22,6 @@
                 <Label Text="Добро пожаловать" Style="{StaticResource H1}" Margin="0,0,0,8"/>
                 <Label Text="Войдите в свой аккаунт" Style="{StaticResource Body}" Margin="0,0,0,32"/>
 
-                <!-- Lockout warning -->
-                <Border IsVisible="{Binding IsLockedOut}" BackgroundColor="{StaticResource ErrorLight}"
-                        StrokeShape="RoundRectangle 12" StrokeThickness="0" Padding="16" Margin="0,0,0,16">
-                    <Label Text="{Binding LockoutMessage}" TextColor="{StaticResource Error}" FontSize="14"/>
-                </Border>
-
                 <!-- Error message -->
                 <Border IsVisible="{Binding HasError}" BackgroundColor="{StaticResource ErrorLight}"
                         StrokeShape="RoundRectangle 12" StrokeThickness="0" Padding="16" Margin="0,0,0,16">
@@ -69,40 +63,17 @@
                            ReturnCommand="{Binding LoginCommand}"/>
                 </Border>
 
-                <!-- Forgot password -->
-                <Label Text="Забыли пароль?" FontSize="13" TextColor="{StaticResource Primary}"
-                       HorizontalOptions="End" Margin="0,0,0,32">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ForgotPasswordCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
-
                 <!-- Login button -->
                 <Button Text="Войти"
                         Command="{Binding LoginCommand}"
                         Style="{StaticResource PrimaryButton}"
                         HorizontalOptions="Fill"
                         IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBool}}"
-                        Margin="0,0,0,16"/>
+                        Margin="0,24,0,16"/>
 
                 <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
                                    Color="{StaticResource Primary}" HorizontalOptions="Center"
                                    Margin="0,0,0,16"/>
-
-                <!-- Divider -->
-                <Grid Margin="0,0,0,16">
-                    <BoxView HeightRequest="1" BackgroundColor="{StaticResource Gray200}"
-                             VerticalOptions="Center" HorizontalOptions="Fill"/>
-                    <Label Text="или" BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource OffBlack}}"
-                           TextColor="{StaticResource Gray400}" FontSize="13"
-                           HorizontalOptions="Center" Padding="8,0"/>
-                </Grid>
-
-                <!-- SSO button -->
-                <Button Text="Войти через SSO"
-                        Command="{Binding SsoLoginCommand}"
-                        Style="{StaticResource SecondaryButton}"
-                        HorizontalOptions="Fill"/>
 
             </VerticalStackLayout>
 

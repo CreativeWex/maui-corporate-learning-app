@@ -24,12 +24,24 @@
                             Command="{Binding SelectScopeCommand}"
                             CommandParameter="Команда"
                             Style="{StaticResource SecondaryButton}"
-                            FontSize="13"/>
+                            FontSize="13">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button" Binding="{Binding SelectedScope}" Value="Команда">
+                                <Setter Property="Style" Value="{StaticResource PrimaryButton}"/>
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
                     <Button Text="Компания"
                             Command="{Binding SelectScopeCommand}"
                             CommandParameter="Компания"
-                            Style="{StaticResource PrimaryButton}"
-                            FontSize="13"/>
+                            Style="{StaticResource SecondaryButton}"
+                            FontSize="13">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button" Binding="{Binding SelectedScope}" Value="Компания">
+                                <Setter Property="Style" Value="{StaticResource PrimaryButton}"/>
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
                 </HorizontalStackLayout>
 
                 <!-- Podium top 3 -->

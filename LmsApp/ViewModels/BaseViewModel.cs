@@ -1,10 +1,17 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using LmsApp.Helpers;
 using LmsApp.Services.Interfaces;
 
 namespace LmsApp.ViewModels;
 
 public partial class BaseViewModel : ObservableObject
 {
+    // Shared, role-safe back navigation. Bound by the Shell back arrow
+    // (BackButtonBehavior) and the "←" toolbar items on pushed pages.
+    [RelayCommand]
+    protected virtual Task GoBackAsync() => Nav.GoBackAsync();
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsNotBusy))]
     private bool _isBusy;

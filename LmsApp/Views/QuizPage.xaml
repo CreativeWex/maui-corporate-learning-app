@@ -7,35 +7,10 @@
              Title="{Binding Quiz.Title}">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Выйти" Command="{Binding GoBackCommand}"/>
+        <ToolbarItem Text="Выйти" Command="{Binding ExitQuizCommand}"/>
     </ContentPage.ToolbarItems>
 
     <Grid RowDefinitions="Auto,*,Auto" Padding="16" RowSpacing="12">
-
-        <!-- No attempts banner -->
-        <Border Grid.Row="0"
-                Grid.RowSpan="3"
-                IsVisible="{Binding NoAttemptsLeft}"
-                BackgroundColor="{StaticResource ErrorLight}"
-                Stroke="{StaticResource Error}"
-                StrokeThickness="1"
-                StrokeShape="RoundRectangle 12"
-                Padding="24"
-                VerticalOptions="Center">
-            <VerticalStackLayout Spacing="12" HorizontalOptions="Center">
-                <Label Text="😔" FontSize="48" HorizontalOptions="Center"/>
-                <Label Text="Попытки исчерпаны"
-                       Style="{StaticResource H2}"
-                       HorizontalOptions="Center"/>
-                <Label Text="Вы использовали все попытки для этого теста."
-                       Style="{StaticResource Body}"
-                       HorizontalOptions="Center"
-                       HorizontalTextAlignment="Center"/>
-                <Button Text="Назад к курсу"
-                        Command="{Binding GoBackCommand}"
-                        Style="{StaticResource PrimaryButton}"/>
-            </VerticalStackLayout>
-        </Border>
 
         <!-- Loading -->
         <ActivityIndicator Grid.Row="0"
@@ -49,27 +24,24 @@
         <!-- Progress header -->
         <VerticalStackLayout Grid.Row="0"
                              Spacing="8"
-                             IsVisible="{Binding NoAttemptsLeft, Converter={StaticResource InvertBool}}">
+                             IsVisible="{Binding IsBusy, Converter={StaticResource InvertBool}}">
             <Grid ColumnDefinitions="*,Auto">
                 <Label Grid.Column="0"
-                       Text="{Binding QuestionIndex, StringFormat='Вопрос {0}'}"
+                       Text="{Binding QuestionNumber, StringFormat='Вопрос {0}'}"
                        Style="{StaticResource H3}"/>
                 <Label Grid.Column="1"
                        Text="{Binding TotalQuestions, StringFormat='из {0}'}"
                        Style="{StaticResource Caption}"
                        VerticalOptions="Center"/>
             </Grid>
-            <ProgressBar Progress="{Binding QuestionIndex, Converter={StaticResource PercentToProgress}}"
+            <ProgressBar Progress="{Binding QuestionProgressFraction}"
                          ProgressColor="{StaticResource Primary}"
                          HeightRequest="6"/>
-            <Label Text="{Binding AttemptsLeft, StringFormat='Попыток осталось: {0}'}"
-                   Style="{StaticResource Caption}"
-                   TextColor="{StaticResource Warning}"/>
         </VerticalStackLayout>
 
         <!-- Question + options -->
         <ScrollView Grid.Row="1"
-                    IsVisible="{Binding NoAttemptsLeft, Converter={StaticResource InvertBool}}">
+                    IsVisible="{Binding IsBusy, Converter={StaticResource InvertBool}}">
             <VerticalStackLayout Spacing="12">
 
                 <!-- Question text -->
@@ -107,7 +79,29 @@
                                         <Setter Property="BackgroundColor" Value="{StaticResource ErrorLight}"/>
                                     </DataTrigger>
                                 </Border.Triggers>
-                                <Label Text="{Binding Text}" Style="{StaticResource Body}"/>
+                                <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                                    <!-- Radio indicator (single choice) -->
+                                    <Label Text="○" FontSize="18" VerticalOptions="Center"
+                                           IsVisible="{Binding IsMultiChoice, Converter={StaticResource InvertBool}}">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
+                                                <Setter Property="Text" Value="●"/>
+                                                <Setter Property="TextColor" Value="{StaticResource Primary}"/>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <!-- Checkbox indicator (multiple choice) -->
+                                    <Label Text="☐" FontSize="18" VerticalOptions="Center"
+                                           IsVisible="{Binding IsMultiChoice}">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
+                                                <Setter Property="Text" Value="☑"/>
+                                                <Setter Property="TextColor" Value="{StaticResource Primary}"/>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <Label Text="{Binding Text}" Style="{StaticResource Body}" VerticalOptions="Center"/>
+                                </HorizontalStackLayout>
                             </Border>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
@@ -144,25 +138,21 @@
         <Grid Grid.Row="2"
               ColumnDefinitions="*,*"
               ColumnSpacing="8"
-              IsVisible="{Binding NoAttemptsLeft, Converter={StaticResource InvertBool}}">
+              IsVisible="{Binding IsBusy, Converter={StaticResource InvertBool}}">
             <Button Grid.Column="0"
                     Text="Пропустить"
                     Command="{Binding SkipCommand}"
                     Style="{StaticResource SecondaryButton}"
                     IsVisible="{Binding IsAnswered, Converter={StaticResource InvertBool}}"/>
-            <Button Grid.Column="0"
-                    Text="Далее →"
-                    Command="{Binding NextQuestionCommand}"
-                    Style="{StaticResource SecondaryButton}"
-                    IsVisible="{Binding IsAnswered}"/>
             <Button Grid.Column="1"
                     Text="Ответить"
                     Command="{Binding SubmitAnswerCommand}"
                     Style="{StaticResource PrimaryButton}"
                     IsVisible="{Binding IsAnswered, Converter={StaticResource InvertBool}}"
                     IsEnabled="{Binding SelectedOptionIndices.Count, Converter={StaticResource IntToBool}}"/>
-            <Button Grid.Column="1"
-                    Text="Следующий →"
+            <Button Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Text="Далее →"
                     Command="{Binding NextQuestionCommand}"
                     Style="{StaticResource PrimaryButton}"
                     IsVisible="{Binding IsAnswered}"/>

@@ -23,6 +23,11 @@ public interface ILocalRepository
     Task SaveModuleAsync(ModuleEntity module);
     Task UpdateModuleStatusAsync(int moduleId, int status);
 
+    // Per-user module progress
+    Task<List<UserModuleProgressEntity>> GetUserModuleProgressAsync(int userId, int courseId);
+    Task<UserModuleProgressEntity?> GetUserModuleProgressByIdAsync(int userId, int moduleId);
+    Task UpsertUserModuleProgressAsync(int userId, int moduleId, int status);
+
     // Lessons
     Task<LessonEntity?> GetLessonByIdAsync(int id);
     Task<LessonEntity?> GetLessonByModuleIdAsync(int moduleId);

@@ -1,3 +1,4 @@
+using LmsApp.Helpers;
 using LmsApp.ViewModels;
 
 namespace LmsApp.Views;
@@ -8,6 +9,7 @@ public partial class CertificatesPage : ContentPage
     {
         InitializeComponent();
         BindingContext = vm;
+        Nav.AttachBackButton(this);
     }
 
     protected override void OnAppearing()

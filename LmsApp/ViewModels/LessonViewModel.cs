@@ -51,7 +51,10 @@ public partial class LessonViewModel : BaseViewModel
             Lesson = await _lessonService.GetLessonAsync(LessonId);
             if (Lesson == null) return;
 
-            IsCompleted = Lesson.IsCompleted;
+            var userId = _session.CurrentUser?.Id ?? 0;
+            IsCompleted = ModuleId > 0
+                ? await _lessonService.IsCompletedByUserAsync(userId, ModuleId)
+                : Lesson.IsCompleted;
             IsArticle = Lesson.Type == ModuleType.Article;
             IsFlashcards = Lesson.Type == ModuleType.Flashcards;
             IsInfographic = Lesson.Type == ModuleType.Infographic;
@@ -119,9 +122,6 @@ public partial class LessonViewModel : BaseViewModel
         }
     }
 
-    [RelayCommand]
-    static Task GoBack() => Shell.Current.GoToAsync("..");
-
     async Task SaveSession()
     {
         var elapsed = (int)(DateTime.Now - _sessionStart).TotalSeconds;
@@ -146,7 +146,7 @@ public partial class LessonViewModel : BaseViewModel
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <style>
                   body { font-family: -apple-system, sans-serif; font-size: 16px; padding: 16px; color: #374151; line-height: 1.6; }
-                  h2 { color: #4F46E5; font-size: 22px; margin-top: 24px; }
+                  h2 { color: #F97316; font-size: 22px; margin-top: 24px; }
                   h3 { color: #111827; font-size: 18px; }
                   code { background: #F3F4F6; padding: 2px 6px; border-radius: 4px; font-size: 14px; }
                   pre { background: #1F2937; color: #E5E7EB; padding: 16px; border-radius: 8px; overflow-x: auto; }

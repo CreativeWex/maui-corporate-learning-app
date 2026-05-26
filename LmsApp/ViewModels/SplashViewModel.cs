@@ -38,7 +38,7 @@ public partial class SplashViewModel : BaseViewModel
         if (user != null && !string.IsNullOrEmpty(token))
         {
             _session.SetSession(user, token);
-            await NavigateByRole(user.Role);
+            NavigateByRole(user.Role);
         }
         else
         {
@@ -46,10 +46,9 @@ public partial class SplashViewModel : BaseViewModel
         }
     }
 
-    static Task NavigateByRole(UserRole role) => role switch
+    static void NavigateByRole(UserRole role)
     {
-        UserRole.Manager or UserRole.Admin => Shell.Current.GoToAsync("//manager"),
-        UserRole.Hr                        => Shell.Current.GoToAsync("//hr"),
-        _                                  => Shell.Current.GoToAsync("//employee")
-    };
+        if (Shell.Current is AppShell appShell)
+            appShell.NavigateToRole(role);
+    }
 }
